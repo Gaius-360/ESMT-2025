@@ -1,0 +1,44 @@
+* { box-sizing: border-box; }
+body { margin:0; font-family: Arial, Helvetica, sans-serif; color:#2c3e50; background:#f8fafc; }
+.dashboard { display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar { width:240px; background:#002d73; color:white; padding:20px; transition:left 0.3s; }
+.sidebar h2 { margin-bottom:30px; font-size:24px; }
+.sidebar nav ul { list-style:none; padding:0; }
+.sidebar nav ul li { margin-bottom:10px; border-radius:6px; }
+.sidebar nav ul li a { display:block; padding:10px; color:white; text-decoration:none; border-radius:6px; transition:0.3s; }
+.sidebar nav ul li:hover, .sidebar nav ul li.active { background:rgba(255,255,255,0.1); }
+
+#logoutBtn { background:#3cb44a; color:#fff; border:none; border-radius:10px; padding:10px 14px; width: 100%; cursor:pointer; transition: transform 0.1s ease, background 0.6s ease;}
+#logoutBtn:hover { background:#4cc3d9; transform: translateY(-1px);}
+
+.content { flex:1; padding:30px; }
+.row { display:flex; gap:10px; align-items:center; background:#fff; padding:14px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.06); }
+.row select, .row button { padding:10px; border-radius:8px; }
+.row button { background:#3498db; color:#fff; border:none; cursor:pointer; }
+.row button:hover { background:#2980b9; }
+
+.emploi-container { display:flex; flex-direction:column; gap:10px; background:#fff; padding:12px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.06); }
+.actions { display:flex; gap:10px; }
+.btn { padding:10px 14px; border:none; border-radius:8px; background:#16a085; color:#fff; text-decoration:none; cursor:pointer; display:inline-flex; gap:6px; align-items:center; }
+.btn.ghost { background:#95a5a6; }
+.pdf-viewer { width:100%; min-height:60vh; overflow:auto; background:#f0f0f0; border-radius:10px; padding:10px; }
+
+canvas { display:block; margin:0 auto 10px auto; }
+
+.menu-toggle { display:none; color:red; background:none; border:none; font-size:1.5rem; cursor:pointer; position:fixed; top:15px; left:15px; z-index:1100; }
+
+@media (max-width:768px){
+  .menu-toggle { display:block; }
+  .sidebar { position:fixed; top:0; left:-300px; width:300px; height:100%; overflow:auto; z-index:1000; }
+  .sidebar h2{margin-top: 50px;}
+  .sidebar.open { left:0; }
+  .content { margin-left:0; padding:10px; }
+  .logo{margin-top: 30px;margin-left: 35%;}
+  .content h1{font-size: 18px;margin-top: 30px;}
+  .row { flex-direction:column; gap:10px; }
+  .row select, .row button { width:100%; }
+  .pdf-viewer { min-height:50vh; }
+  .emploi-container { flex-direction:column; }
+}

@@ -1,0 +1,547 @@
+:root {
+  --bg: #f9fafb; 
+  --card: #ffffff; 
+  --muted: #6b7280; 
+  --fg: #111827; 
+  --accent: #2563eb; 
+  --ok: #16a34a; 
+  --ko: #dc2626;
+  --border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f9fafb, #f3f4f6 60%, #e5e7eb);
+  color: var(--fg);
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+.dashboard {
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 240px;
+  background: #002d73; /* bleu foncé */
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.sidebar nav ul {
+ list-style: none;
+  padding: 0;
+}
+
+.sidebar nav ul li {
+  margin-bottom: 10px;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.sidebar nav ul li a {
+  display: block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar nav ul li:hover,
+.sidebar nav ul li.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.sidebar i {
+  margin-right: 10px;
+}
+
+#logoutBtn {
+  background: #3cb44a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  width: 100%;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.6s ease;
+  box-shadow: 0 6px 16px rgba(60, 180, 74, 0.25);
+}
+
+#logoutBtn:hover {
+  transform: translateY(-1px);
+  background-color: #4cc3d9;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+  color: #002d73;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.filters select {
+  background: var(--card);
+  color: var(--fg);
+  border: var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.filters{margin-left: 30px;}
+
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  border: var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.card:hover{
+  transform: translateY(-3px);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.table thead th {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: left;
+  padding: 6px 8px;
+}
+
+.table tbody tr {
+  background: rgba(255, 255, 255, 0.8);
+  border: var(--border);
+}
+
+.table tbody td {
+  padding: 10px 8px;
+  border-radius: 10px;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.badge.ok {
+  background: rgba(34, 197, 94, 0.15);
+  color: #166534;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge.ko {
+  background: rgba(239, 68, 68, 0.15);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.error {
+  margin-top: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 12px;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+
+  }
+
+  .sidebar h2{
+    margin-top: 40px;
+  }
+  
+  .sidebar nav ul li {
+    margin-bottom: 0;
+    font-size: 1.0rem;
+  }
+
+  .sidebar nav ul li a{
+    padding: 5px;
+  }
+
+  .main-content {
+    padding: 20px 15px;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .user-info {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+/* Footer */
+    .footer {
+      background: #ddd;
+      padding: 20px 40px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .footer-link {
+      cursor: pointer;
+      font-size: 14px;
+      position: relative;
+      transition: color 0.3s ease, transform 0.2s ease;
+    }
+
+    .footer-link::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: #38bdf8;
+      transition: width 0.3s ease;
+    }
+
+    .footer-link:hover {
+      transform: translateY(-2px);
+    }
+
+    .footer-link:hover::after {
+      width: 100%;
+    }
+
+
+/* Modales */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.3);
+  backdrop-filter: blur(6px);   /* ✅ flou arrière-plan */
+  -webkit-backdrop-filter: blur(6px); /* compatibilité Safari */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  color: var(--text-color);
+  padding: 20px;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 10px;
+  color: var(--accent-color);
+}
+
+.close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--accent-color);
+}
+
+/* Conteneur de notification */
+.notifications-container {
+  position: relative;
+  margin-left: 20px;
+}
+
+/* Bouton cloche */
+.notification-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  font-size: 1.5rem;
+  color: #333;
+  outline: none;
+  transition: color 0.2s;
+}
+
+.notification-btn:hover {
+  color: #007bff;
+}
+
+/* Compteur de notifications */
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 50%;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Optionnel : animation clignotement pour nouvelle notification */
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+
+.notification-count.new {
+  animation: blink 1s infinite;
+}
+
+/* Container du bouton notification */
+.notifications-container {
+  position: relative;
+  display: inline-block;
+
+}
+
+/* Bouton de notification */
+.notification-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Badge compteur */
+.notification-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 5px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+/* Dropdown notifications */
+.notification-dropdown {
+  display: none; /* masqué par défaut */
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* Liste des notifications */
+.notification-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+/* Chaque notification */
+.notification-dropdown ul li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notification-dropdown ul li:last-child {
+  border-bottom: none;
+}
+
+/* Effet au survol */
+.notification-dropdown ul li:hover {
+  background-color: #f5f5f5;
+}
+
+/* Style pour les notifications non lues */
+.notification-dropdown ul li.unread {
+  font-weight: bold;
+  background-color: #eef6ff;
+}
+
+/* Menu mobile */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: red;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+/* Sidebar responsive */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    height: 100%;
+    width: 300px;
+    background: #002d73;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    overflow: auto;
+    font-size: 1.8rem;
+  }
+
+  nav ul li{
+    padding: 10px;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .container {
+    margin-top: 60px;
+  }
+  .logo{margin-top: 30px;margin-left: 35%;}
+  .footer{margin-top: 100%;}
+
+  .footer-links { flex-direction: column; gap:8px; }
+}
+
+
+/* Header mobile */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .filters select {
+    width: 100%;
+  }
+
+  .notifications-container {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 1024px) {
+  .container {
+    max-width: 95%;
+    margin: 20px auto;
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    margin: 10px auto;
+    padding: 0 10px;
+  }
+  .header{
+
+    align-items: center;
+  }
+  .header h1{
+    margin-top: 50px;
+    font-size: 16px;
+  }
+  .modal{
+    height: 100%;
+  }
+  .modal-content{
+    max-height: 50%;
+    overflow: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    max-width: 100%;
+    margin: 0;
+    padding: 8px;
+  }
+
+  /* Rendre le tableau scrollable horizontalement */
+  .table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* fluide sur mobile */
+  }
+
+  .table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+  }
+
+  .table thead th {
+    font-size: 0.85rem;
+    padding: 8px;
+    white-space: nowrap; /* évite la casse de texte */
+  }
+
+  .table tbody td {
+    font-size: 0.9rem;
+    padding: 8px;
+    white-space: nowrap;
+  }
+}

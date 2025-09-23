@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Etudiant - Emploi du Temps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="calendrier.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+</head>
+<body>
+
+<div class="dashboard">
+  <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+  <aside class="sidebar">
+    <h2>Espace Étudiant</h2>
+    <nav>
+      <button id="logoutBtn">Déconnexion</button>
+      <ul>
+        <li><a href="../dashboard/dashboard_protected.html"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+          <li><a href="../Profil/profil.html"><i class="fa-solid fa-user"></i> Profil</a></li>
+          <li><a href="../Notes/notes.html"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+          <li class="active"><a href="../Calendrier/calendrier.html"><i class="fa-solid fa-calendar"></i> Calendrier</a></li>
+          <li><a href="../Absences/absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+          <li><a href="../Releve/releve.html"><i class="fa-solid fa-file-lines"></i> Relevé de notes</a></li>
+          <li><a href="../Etudiants_ESMT/etudiants_esmt.html"><i class="fa-solid fa-users"></i> Etudiants-ESMT</a></li>
+          <li><a href="../Messages/messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="logo"><img src="../logo/logo.png" alt="" style="width: 120px;margin-top: 10px;"></div>
+    <h1>Consulter les emplois de temps</h1>
+
+    <div class="row">
+      <label for="niveau">Choisir un niveau :</label>
+      <select id="niveau" required>
+        <option value="">-- Choisir un niveau --</option>
+        <option value="Licence 1">Licence 1</option>
+        <option value="Licence 2">Licence 2</option>
+        <option value="Licence 3 - RT">Licence 3 - RT</option>
+        <option value="Licence 3 - ASR">Licence 3 - ASR</option>
+      </select>
+      <button id="voirEmploi"><i class="fa-solid fa-eye"></i> Voir</button>
+    </div>
+
+    <div id="emploiContainer" class="emploi-container" style="display:none;">
+      <div class="actions">
+        <a id="downloadLink" href="#" download="emploi.pdf" class="btn"><i class="fa-solid fa-download"></i> Télécharger</a>
+        <button id="fermer" class="btn ghost"><i class="fa-solid fa-xmark"></i> Fermer</button>
+      </div>
+      <div id="pdfViewer" class="pdf-viewer"></div>
+    </div>
+
+  </main>
+</div>
+
+<script src="calendrier.js"></script>
+</body>
+</html>

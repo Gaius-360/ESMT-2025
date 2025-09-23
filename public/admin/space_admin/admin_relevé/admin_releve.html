@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Modèles de Relevé - Admin</title>
+  <link rel="stylesheet" href="admin_releve.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Bouton menu mobile -->
+    <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="sidebar">
+      <h2>Espace Admin</h2>
+      <nav>
+        <button id="logoutBtn" style="width: 100%;">Déconnexion</button>
+        <ul>
+          <li><a href="../admin_dashboard/admin_dashboard.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a></li>
+          <li><a href="../admin_etudiants/etudiants.html"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+          <li><a href="../admin_calendrier/admin_calendrier.html"><i class="fa-solid fa-calendar-days"></i> Calendrier</a></li>
+          <li><a href="../admin_matieres/admin_matieres.html"><i class="fa-solid fa-book"></i> Matières</a></li>
+          <li class="active"><a href="../admin_relevé/admin_releve.html"><i class="fa-solid fa-file-lines"></i> Relevé</a></li>
+          <li><a href="../admin_notes/admin_notes.html"><i class="fa-solid fa-chart-column"></i> Notes</a></li>
+          <li><a href="../admin_absences/admin_absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+          <li><a href="../admin_messages/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <h1>Modèles de relevé (par niveau & semestre)</h1>
+
+      <section class="controls">
+        <label>Niveau :
+          <select id="niveauSelect">
+            <option value="Licence 1">Licence 1</option>
+            <option value="Licence 2">Licence 2</option>
+            <option value="Licence 3">Licence 3</option>
+          </select>
+        </label>
+
+        <label>Semestre :
+          <select id="semestreSelect">
+            <option value="Semestre 1">Semestre 1</option>
+            <option value="Semestre 2">Semestre 2</option>
+          </select>
+        </label>
+
+        <button id="chargerModel">Charger modèle</button>
+        <button id="nouveauModel">Créer nouveau modèle</button>
+      </section>
+
+      <section id="editeur" style="display:none;">
+        <h2 id="titreModele">Éditeur de modèle</h2>
+        <label>Titre du modèle : <input id="titreInput" type="text" /></label>
+
+        <div class="domaines">
+          <h3>Domaines</h3>
+          <div id="domainesList"></div>
+          <button id="ajouterDomaineBtn">+ Ajouter domaine</button>
+        </div>
+
+        <div style="margin-top:12px;">
+          <button id="enregistrerModelBtn">💾 Enregistrer le modèle</button>
+          <button id="supprimerModelBtn" style="background:#f55;color:#fff; display:none;">🗑️ Supprimer ce modèle</button>
+          <button id="annulerEditionBtn">Annuler</button>
+        </div>
+      </section>
+
+      <section id="modelesExistants" style="margin-top:30px;">
+        <h3>Modèles existants pour sélection</h3>
+        <ul id="listeModeles"></ul>
+      </section>
+    </main>
+  </div>
+  
+   <datalist id="matieresList">
+      <option value="Mathématiques" data-coef="2.5"></option>
+      <option value="Physique" data-coef="3"></option>
+      <option value="Chimie" data-coef="1.5"></option>
+    </datalist>
+
+    <script>
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  try {
+    // ⚠️ Vérifie si c’est un admin ou un étudiant
+    const isAdminPage = window.location.pathname.includes("admin");
+
+    const url = isAdminPage
+      ? "http://localhost:5000/api/admin/logout"
+      : "http://localhost:5000/api/etudiants/logout";
+
+    const res = await fetch(url, {
+      method: "POST",
+      credentials: "include"
+    });
+
+    if (res.ok) {
+      // Redirection après déconnexion
+      window.location.href = isAdminPage ? "/frontend/admin/admin_connexion/admin_connexion.html" : "../connexion/etudiant_connexion.html";
+    }
+  } catch (err) {
+    console.error("Erreur déconnexion :", err);
+  }
+});
+</script>
+
+  <script src="admin_releve.js"></script>
+</body>
+</html>

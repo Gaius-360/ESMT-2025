@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messagerie Étudiant</title>
+  <link rel="stylesheet" href="messages.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Administrateurs</h2>
+    <ul id="adminList"></ul>
+  </aside>
+
+  <div class="chat">
+    <div class="chat-header">
+      <h3 id="chatTitle">Sélectionnez un admin</h3>
+    </div>
+    <div id="chatMessages"></div>
+    <div class="chat-input">
+      <textarea id="messageInput" placeholder="Écrire un message..."></textarea>
+      <label for="fileInput">📎</label>
+      <input type="file" id="fileInput" />
+      <button id="sendButton">➤</button>
+    </div>
+
+  </div>
+
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="messages.js"></script>
+</body>
+</html>

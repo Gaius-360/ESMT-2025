@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Import Emploi du Temps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- PDF.js Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <link rel="stylesheet" href="admin_calendrier.css">
+</head>
+<body>
+
+<div class="dashboard">
+  <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+  <aside class="sidebar">
+    <h2>Espace Admin</h2>
+    <nav>
+      <button id="logoutBtn">Déconnexion</button>
+      <ul>
+        <li><a href="../admin_dashboard/admin_dashboard.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a></li>
+        <li><a href="../admin_etudiants/etudiants.html"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+        <li class="active"><a href="../admin_calendrier/admin_calendrier.html"><i class="fa-solid fa-calendar-days"></i> Calendrier</a></li>
+        <li><a href="../admin_matieres/admin_matieres.html"><i class="fa-solid fa-book"></i> Matières</a></li>
+        <li><a href="../admin_relevé/admin_releve.html"><i class="fa-solid fa-file-lines"></i> Relevé</a></li>
+        <li><a href="../admin_notes/admin_notes.html"><i class="fa-solid fa-chart-column"></i> Notes</a></li>
+        <li><a href="../admin_absences/admin_absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+        <li><a href="../admin_messages/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="form-container">
+    <h1>Importer un emploi du temps (PDF)</h1>
+    <form id="uploadForm">
+      <label for="niveau">Niveau :</label>
+      <select name="niveau" id="niveau" required>
+        <option value="">-- Sélectionner un niveau --</option>
+        <option value="Licence 1">Licence 1</option>
+        <option value="Licence 2">Licence 2</option>
+        <option value="Licence 3">Licence 3</option>
+      </select>
+      <input type="file" name="file" id="file" accept=".pdf" required />
+      <button type="submit">Exporter</button>
+    </form>
+
+    <pre id="result" style="background:#f0f0f0; padding:10px; border:1px solid #ccc; margin-top:10px;display: none;"></pre>
+
+    <section class="preview">
+      <h2>Aperçu PDF</h2>
+      <div class="preview-row">
+        <select id="niveauPreview">
+          <option value="">-- Choisir un niveau --</option>
+          <option value="Licence 1">Licence 1</option>
+          <option value="Licence 2">Licence 2</option>
+          <option value="Licence 3 - RT">Licence 3 - RT</option>
+          <option value="Licence 3 - ASR">Licence 3 - ASR</option>
+        </select>
+        <button id="voirPdf">Voir</button>
+        <button id="fermerPdf" style="display:none;">Fermer</button>
+      </div>
+      <div id="pdfViewer"></div>
+    </section>
+  </main>
+</div>
+
+<script src="admin_calendrier.js"></script>
+</body>
+</html>

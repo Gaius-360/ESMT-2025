@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Gestion des Notes - Admin</title>
+  <link rel="stylesheet" href="admin_notes.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Bouton menu mobile -->
+    <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Espace Admin</h2>
+      <nav>
+        <button id="logoutBtn">Déconnexion</button>
+        <ul>
+          <li><a href="../admin_dashboard/admin_dashboard.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a></li>
+          <li><a href="../admin_etudiants/etudiants.html"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+          <li><a href="../admin_calendrier/admin_calendrier.html"><i class="fa-solid fa-calendar-days"></i> Calendrier</a></li>
+          <li><a href="../admin_matieres/admin_matieres.html"><i class="fa-solid fa-book"></i> Matières</a></li>
+          <li><a href="../admin_relevé/admin_releve.html"><i class="fa-solid fa-file-lines"></i> Relevé</a></li>
+          <li class="active"><a href="../admin_notes/admin_notes.html"><i class="fa-solid fa-chart-column"></i> Notes</a></li>
+          <li><a href="../admin_absences/admin_absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+          <li><a href="../admin_messages/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+      <h1>Gestion des Notes</h1>
+
+      <!-- Boutons niveau -->
+      <section class="niveau-buttons">
+        <button class="niveau-btn" data-niveau="Licence 1">Licence 1</button>
+        <button class="niveau-btn" data-niveau="Licence 2">Licence 2</button>
+        <button class="niveau-btn" data-niveau="Licence 3 - RT">Licence 3 - RT</button>
+        <button class="niveau-btn" data-niveau="Licence 3 - ASR">Licence 3 - ASR</button>
+      </section>
+
+      <!-- Étudiant + semestre -->
+      <section class="filtres">
+        <h3 id="niveauSelectionne" style="margin-top: 20px; color: green;"></h3>
+        <label for="etudiantSelect">Étudiant :</label>
+        <select id="etudiantSelect">
+          <option value="">-- Choisir un étudiant --</option>
+        </select>
+
+        <label for="semestreSelect">Semestre :</label>
+        <select id="semestreSelect">
+          <option value="Semestre 1">Semestre 1</option>
+          <option value="Semestre 2">Semestre 2</option>
+        </select>
+      </section>
+
+      <!-- Tableau notes -->
+      <section class="table-container">
+        <h2>Ajouter / Modifier les notes</h2>
+        <table class="notes-table">
+          <thead>
+            <tr>
+              <th>Matière</th>
+              <th>Coef</th>
+              <th>Contrôle continu 3/5</th>
+              <th>Évaluation semestriel 2/5</th>
+              <th>Semestre</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="notesBody">
+            <!-- Lignes dynamiques par JS -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin_notes.js"></script>
+</body>
+</html>

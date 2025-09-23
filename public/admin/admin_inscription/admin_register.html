@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription Administrateur</title>
+  <link rel="stylesheet" href="admin_register.css" />
+</head>
+<body>
+  <div class="container">
+     <img src="../logo/logo.png" alt="" style="width: 150px; margin-left: 120px;">
+    <h2>Inscription Administrateur</h2>
+    <form id="inscription-form">
+      <label for="email">Email :</label>
+      <input type="email" id="email" required />
+
+      <label for="password">Mot de passe :</label>
+      <input type="password" id="password" required />
+
+      <label for="confirm-password">Confirmer le mot de passe :</label>
+      <input type="password" id="confirm-password" required />
+
+      <button type="submit" id="submit-btn">S'inscrire</button>
+      <p id="message"></p>
+    </form>
+
+    <p>Déjà inscrit ? <a href="../admin_connexion/admin_connexion.html">Connexion</a></p>
+  </div>
+
+  <script src="admin_register.js"></script>
+</body>
+</html>

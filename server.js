@@ -1,0 +1,83 @@
+require("dotenv").config();
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const http = require("http");
+const { Server } = require("socket.io");
+const path = require("path");
+
+const app = express();
+const server = http.createServer(app);
+
+// --- Socket.IO ---
+const ALLOWED_ORIGINS = [
+  "http://localhost:5501",
+  "http://127.0.0.1:5500",
+  process.env.CLIENT_ORIGIN
+];
+
+const io = new Server(server, {
+  cors: { origin: ALLOWED_ORIGINS, credentials: true }
+});
+
+// Middlewares
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+
+// Fichiers statiques
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// exposer io aux routes
+app.set("io", io);
+
+// --- MongoDB ---
+console.log("MONGO_URL =", process.env.MONGO_URL);
+
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB connecté"))
+.catch(err => console.error("❌ Erreur MongoDB :", err));
+
+// --- Routes ---
+app.use("/api/etudiants", require("./routes/etudiants"));
+app.use("/api/admin", require("./routes/admin"));
+app.use("/api/notes", require("./routes/notes"));
+app.use("/api/matieres", require("./routes/matieres"));
+app.use("/api/releve", require("./routes/modeleReleve"));
+app.use("/api/releves", require("./routes/modeleReleve"));
+app.use("/api/absences", require("./routes/absences"));
+app.use("/api/emplois", require("./routes/emplois"));
+app.use("/api/messages", require("./routes/messages"));
+app.use("/api/notifications", require("./routes/notifications"));
+app.use("/api/notifOnlyStudent", require("./routes/notifOnlyStudent"));
+
+// --- Socket.IO listeners ---
+io.on("connection", (socket) => {
+  console.log("🔌 connecté :", socket.id);
+
+  socket.on("joinRoom", (userId) => {
+    if (typeof userId === "string" && userId.length >= 12) {
+      socket.join(userId);
+      console.log(`👥 ${socket.id} a rejoint la salle ${userId}`);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ déconnecté :", socket.id);
+  });
+});
+
+// --- Racine bloquée ---
+app.get("/", (req, res) => {
+  res.status(404).send("Accès direct non autorisé. Utilisez /login.html ou /login_admin.html");
+});
+
+// --- Démarrage du serveur ---
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`🚀 Serveur démarré sur le port ${PORT}`));

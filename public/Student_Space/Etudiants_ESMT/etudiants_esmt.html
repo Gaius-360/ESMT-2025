@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Liste des Étudiants</title>
+  <link rel="stylesheet" href="etudiants_esmt.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="dashboard">
+    <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Espace Étudiant</h2>
+      <nav>
+        <button id="logoutBtn">Déconnexion</button>
+        <ul>
+          <li><a href="../dashboard/dashboard_protected.html"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+          <li><a href="../Profil/profil.html"><i class="fa-solid fa-user"></i> Profil</a></li>
+          <li><a href="../Notes/notes.html"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+          <li><a href="../Calendrier/calendrier.html"><i class="fa-solid fa-calendar"></i> Calendrier</a></li>
+          <li><a href="../Absences/absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+          <li><a href="../Releve/releve.html"><i class="fa-solid fa-file-lines"></i> Relevé de notes</a></li>
+          <li class="active"><a href="../Etudiants_ESMT/etudiants_esmt.html"><i class="fa-solid fa-users"></i> Étudiants-ESMT</a></li>
+          <li><a href="../Messages/messages.html"><i class="fa-solid fa-envelope"></i> Message</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main>
+      <div class="logo"><img src="../logo/logo.png" alt="" style="width: 120px;margin-bottom: 30px;"></div>
+      <h1>Étudiants de l'ESMT</h1>
+
+      <div class="filters">
+        <label for="niveauSelect">Filtrer par niveau :</label>
+        <select id="niveauSelect">
+          <option value="All">Tous</option>
+          <option value="Licence 1">Licence 1</option>
+          <option value="Licence 2">Licence 2</option>
+          <option value="Licence 3 - RT">Licence 3 - RT</option>
+          <option value="Licence 3 - ASR">Licence 3 - ASR</option>
+        </select>
+        <button id="sortNameBtn"><i class="fa-solid fa-arrow-down-a-z"></i> Trier par nom</button>
+      </div>
+
+      <table id="etudiantsTable">
+        <thead>
+          <tr>
+            <th>Nom complet</th>
+            <th>Téléphone</th>
+            <th>Niveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="3">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <!-- Pied de page -->
+<footer class="footer">
+  <div class="footer-content">
+    <p>&copy; 2025 ESMT - Tous droits réservés.</p>
+    <div class="footer-links">
+      <span class="footer-link" data-modal="about">À propos</span>
+      <span class="footer-link" data-modal="privacy">Politique de confidentialité</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Fenêtre modale - À propos -->
+<div class="modal" id="modal-about">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <section class="about">
+      <h2>À propos</h2>
+      <p style="padding-bottom: 20px;padding-top: 5px;">
+        Ce site est un projet académique développé pour la gestion estudiantine de l’ESMT. 
+        Il permet à l'administrateur de gérer les étudiants, les notes, les emplois du temps, 
+        les absences et les relevés, tout en offrant aux étudiants un espace personnel 
+        pour consulter leurs informations.
+      </p>
+      <p style="padding-bottom: 20px;">
+        Développé par <strong>KOUDOUGOU Gaïus</strong>, ce projet a pour objectif de faciliter 
+        la digitalisation et la transparence de la vie académique au sein de l’ESMT.
+      </p>
+      
+    </section>
+  </div>
+</div>
+
+
+<!-- Fenêtre modale - Politique de confidentialité -->
+<div class="modal" id="modal-privacy">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <section class="privacy">
+      <h2 style="margin-bottom: 20px;">Politique de confidentialité</h2>
+      <p style="padding-bottom: 20px;">
+        La protection des données personnelles des étudiants et administrateurs est une 
+        priorité. Toutes les informations collectées (identité, email, notes, 
+        absences) sont utilisées uniquement dans le cadre de la gestion académique de l’ESMT.
+      </p>
+      <p style="padding-bottom: 20px;">
+        Aucune donnée ne sera partagée ou vendue à des tiers. 
+        Seules les personnes autorisées (administrateurs) ont accès aux informations sensibles.
+      </p>
+      <p style="padding-bottom: 20px;">
+        Les utilisateurs peuvent demander la modification ou la suppression de leurs données 
+        en contactant l’administrateur du système.
+      </p>
+      
+    </section>
+  </div>
+</div>
+
+  <!-- Scripts -->
+  <script src="etudiants_esmt.js"></script>
+</body>
+</html>

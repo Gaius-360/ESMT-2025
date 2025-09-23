@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messagerie Administrateur</title>
+  <link rel="stylesheet" href="admin_messages.css" />
+</head>
+<body>
+
+  <!-- Sidebar gauche -->
+  <aside class="sidebar">
+    <h2>Rechercher un étudiant</h2>
+    <input type="text" id="studentSearch" placeholder="Tapez le nom..." />
+    <ul id="studentList" class="searchResults"></ul>
+
+    <div class="levelSelector">
+      <h3>Choisir un niveau :</h3>
+      <ul id="levelList">
+        <li data-level="Licence 1">Licence 1</li>
+        <li data-level="Licence 2">Licence 2</li>
+        <li data-level="Licence 3 - RT">Licence 3 - RT</li>
+        <li data-level="Licence 3 - ASR">Licence 3 - ASR</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Zone principale chat -->
+  <div class="chat">
+    <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+    <div class="chat-header">
+      <h3 id="chatTitle">Sélectionnez un étudiant ou un niveau</h3>
+
+      <!-- Conteneur notifications -->
+      <div id="notificationBell" class="notification-bell">
+        🔔
+        <span id="notificationBadge" class="badge">0</span>
+        <div id="notificationMenu" class="notification-menu">
+          <ul id="notifList"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="chatMessages"></div>
+
+    <div class="chat-input">
+      <textarea id="messageInput" placeholder="Écrire un message..."></textarea>
+      <label for="fileInput">📎</label>
+      <input type="file" id="fileInput" />
+      <button id="sendButton">➤</button>
+    </div>
+
+  </div>
+
+  <!-- Socket.IO -->
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="admin_messages.js"></script>
+</body>
+</html>

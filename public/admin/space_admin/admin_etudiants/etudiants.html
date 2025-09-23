@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Gestion Étudiants</title>
+  <link rel="stylesheet" href="admin_etudiants.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Bouton menu mobile -->
+    <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Espace Admin</h2>
+      <nav>
+        <button id="logoutBtn">Déconnexion</button>
+        <ul>
+          <li><a href="../admin_dashboard/admin_dashboard.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a></li>
+          <li class="active"><a href="../admin_etudiants/etudiants.html"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+          <li><a href="../admin_calendrier/admin_calendrier.html"><i class="fa-solid fa-calendar-days"></i> Calendrier</a></li>
+          <li><a href="../admin_matieres/admin_matieres.html"><i class="fa-solid fa-book"></i> Matières</a></li>
+          <li><a href="../admin_relevé/admin_releve.html"><i class="fa-solid fa-file-lines"></i> Relevé</a></li>
+          <li><a href="../admin_notes/admin_notes.html"><i class="fa-solid fa-chart-column"></i> Notes</a></li>
+          <li><a href="../admin_absences/admin_absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+          <li><a href="../admin_messages/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+      <h1>Gestion des Étudiants</h1>
+
+      <!-- Sélecteur de niveau -->
+      <div class="niveau-selection">
+        <label for="niveau-select">Niveau :</label>
+        <select id="niveau-select">
+          <option value="Licence 1">Licence 1</option>
+          <option value="Licence 2">Licence 2</option>
+          <option value="Licence 3 - RT">Licence 3 - RT</option>
+          <option value="Licence 3 - ASR">Licence 3 - ASR</option>
+        </select>
+      </div>
+
+      <!-- Tableau des étudiants -->
+      <div class="table-container">
+        <table class="etudiants-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nom complet</th>
+              <th>Phone</th>
+              <th>Niveau</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="etudiants-table-body">
+            <tr><td colspan="7">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script Déconnexion -->
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        const isAdminPage = window.location.pathname.includes("admin");
+        const url = isAdminPage
+          ? "http://localhost:5000/api/admin/logout"
+          : "http://localhost:5000/api/etudiants/logout";
+
+        const res = await fetch(url, {
+          method: "POST",
+          credentials: "include"
+        });
+
+        if (res.ok) {
+          window.location.href = isAdminPage 
+            ? "/frontend/admin/admin_connexion/admin_connexion.html" 
+            : "/login.html";
+        }
+      } catch (err) {
+        console.error("Erreur déconnexion :", err);
+      }
+    });
+
+  </script>
+
+  <script src="admin_etudiants.js"></script>
+</body>
+</html>

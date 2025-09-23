@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription Étudiant</title>
+  <link rel="stylesheet" href="etudiant_register.css">
+</head>
+<body>
+  <div class="container">
+    <img src="../logo/logo.png" alt="" style="width: 150px; margin-left: 175px;">
+    <h2>Inscription Étudiant</h2>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="fullname">Nom complet</label>
+        <input type="text" id="fullname" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Adresse Email</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="phone">Téléphone</label>
+        <input type="text" id="phone" required />
+      </div>
+      <div class="form-group">
+        <label for="birthdate">Date de naissance</label>
+        <input type="date" id="birthdate" required />
+      </div>
+      <div class="form-group">
+        <label for="gender">Genre</label>
+        <select id="gender" required>
+          <option value="">-- Sélectionnez --</option>
+          <option value="Homme">Homme</option>
+          <option value="Femme">Femme</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="level">Niveau</label>
+        <select id="level" required>
+          <option value="">-- Sélectionnez --</option>
+          <option value="Licence 1">Licence 1</option>
+          <option value="Licence 2">Licence 2</option>
+          <option value="Licence 3 - RT">Licence 3 - RT</option>
+          <option value="Licence 3 - ASR">Licence 3 - ASR</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" required />
+      </div>
+      <button type="submit">S'inscrire</button>
+      <div id="message"></div>
+    </form>
+    <p>Déjà inscrit(e) ? <a href="../connexion/etudiant_connexion.html">Connexion</a></p>
+  </div>
+
+  <script src="etudiant_register.js"></script>
+</body>
+</html>

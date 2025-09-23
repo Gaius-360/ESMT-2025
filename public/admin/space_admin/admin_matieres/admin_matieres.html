@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestion des Matières - Admin</title>
+  <link rel="stylesheet" href="admin_matieres.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Bouton menu mobile -->
+    <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Espace Admin</h2>
+      <nav>
+        <button id="logoutBtn">Déconnexion</button>
+        <ul>
+          <li><a href="../admin_dashboard/admin_dashboard.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a></li>
+          <li><a href="../admin_etudiants/etudiants.html"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+          <li><a href="../admin_calendrier/admin_calendrier.html"><i class="fa-solid fa-calendar-days"></i> Calendrier</a></li>
+          <li class="active"><a href="../admin_matieres/admin_matieres.html"><i class="fa-solid fa-book"></i> Matières</a></li>
+          <li><a href="../admin_relevé/admin_releve.html"><i class="fa-solid fa-file-lines"></i> Relevé</a></li>
+          <li><a href="../admin_notes/admin_notes.html"><i class="fa-solid fa-chart-column"></i> Notes</a></li>
+          <li><a href="../admin_absences/admin_absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+          <li><a href="../admin_messages/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+
+      <!-- Tableau des matières -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Matière</th>
+                <th>Coefficient</th>
+                <th>Semestre</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableMatieres">
+              <tr>
+                <td colspan="4">Sélectionnez un niveau pour voir ses matières</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      <h1>Gestion des Matières</h1>
+
+      <!-- Boutons de sélection du niveau -->
+      <section class="niveau-section">
+        <button class="niveau-btn" data-niveau="Licence 1">Licence 1</button>
+        <button class="niveau-btn" data-niveau="Licence 2">Licence 2</button>
+        <button class="niveau-btn" data-niveau="Licence 3 - RT">Licence 3 - RT</button>
+        <button class="niveau-btn" data-niveau="Licence 3 - ASR">Licence 3 - ASR</button>
+      </section>
+
+      <!-- ======= Gestion des Matières ======= -->
+      <section id="gestionMatieres" style="margin-top: 30px;">
+        <h2>📚 Matières pour le niveau : <span id="niveauMatieres"></span></h2>
+
+        <!-- Formulaire d'ajout / modification -->
+        <form id="formMatiere" class="form-matiere">
+          <input type="hidden" id="matiereId" value="">
+          
+          <label>Matière :</label>
+          <input type="text" id="matiereNom" placeholder="Nom de la matière" required>
+
+          <label>Coefficient :</label>
+          <input type="number" id="matiereCoef" placeholder="Coef" step="0.1" required>
+
+          <label>Semestre :</label>
+          <select id="matiereSemestre" required>
+            <option value="">-- Choisir --</option>
+            <option value="Semestre 1">Semestre 1</option>
+            <option value="Semestre 2">Semestre 2</option>
+          </select>
+
+          <div class="form-actions">
+            <button type="submit" class="save">💾 Enregistrer</button>
+            <button type="button" id="resetFormMatiere" class="cancel">❌ Annuler</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin_matieres.js"></script>
+</body>
+</html>

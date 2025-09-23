@@ -1,0 +1,277 @@
+/* Variables globales */
+:root {
+  --bg-color: #ffffff;
+  --sidebar-bg: #002d73;
+  --sidebar-color: #ffffff;
+  --main-bg: #ffffff;
+  --accent-color: #002d73;
+  --success-color: #3cb44a;
+  --warning-color: #f6b800;
+  --danger-color: #f44336;
+  --text-color: #002d73;
+  --muted-color: #82d0de;
+  --border-color: #f0f0f0;
+  --hover-bg: #f9f9f9;
+  --shadow: 0 2px 6px rgba(0,0,0,0.1);
+  --radius: 8px;
+  --padding: 12px;
+  --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: left 0.3s ease;
+}
+
+.sidebar h2 {
+  font-size: 1.5rem;
+}
+
+.sidebar nav ul {
+  list-style: none;
+}
+
+.sidebar nav ul li {
+  margin-bottom: 15px;
+}
+
+.sidebar nav ul li a {
+  color: var(--sidebar-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li.active a {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+  background-color: var(--main-bg);
+  margin: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+/* Titre */
+.main-content h1 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: var(--accent-color);
+}
+
+/* Sélecteur de niveau */
+.niveau-selection {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.niveau-selection label {
+  font-weight: 600;
+}
+
+.niveau-selection select {
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+/* Table */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.etudiants-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  overflow: hidden;
+  min-width: 700px; /* garde le header visible sur petit écran */
+}
+
+.etudiants-table th,
+.etudiants-table td {
+  padding: var(--padding);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.etudiants-table th {
+  background-color: #174794;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.etudiants-table tr:hover {
+  background-color: var(--hover-bg);
+}
+
+.etudiants-table td button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.etudiants-table td .delete-btn {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+
+.etudiants-table td .delete-btn:hover {
+  opacity: 0.85;
+}
+
+.etudiants-table td a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.etudiants-table td a:hover {
+  text-decoration: underline;
+}
+
+/* Boutons généraux */
+button {
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.08s ease, opacity 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+#logoutBtn{
+  background:#3cb44a;
+  color:#fff;
+  border:none;
+  margin-bottom: 10px;
+  border-radius:10px;
+  padding:10px;
+  width: 100%;
+  font-weight:600;
+  cursor:pointer;
+  transition:transform .08s ease,opacity .2s ease; 
+  box-shadow:0 6px 16px rgba(60,180,74,.25)
+}
+#logoutBtn:hover{
+  transform:translateY(-1px);
+  background-color: #4cc3d9;
+}
+
+/* Menu mobile */
+.menu-toggle {
+  display: none;
+  border: none;
+  background: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  z-index: 1100;
+  color: red;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    height: 100%;
+    z-index: 1000;
+    overflow: auto;
+  }
+
+  .sidebar h2{
+    margin-top: 40px;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main-content {
+    margin: 80px 10px 20px 10px;
+    padding: 20px;
+  }
+  .main-content h1{
+    font-size: 15px;
+  }
+}
+
+/* Ajustement du tableau sur mobile */
+@media (max-width: 768px) {
+  .etudiants-table {
+    min-width: 100%; /* prend toute la largeur de l’écran */
+    font-size: clamp(10px, 2.5vw, 13px); /* texte qui s’adapte */
+  }
+
+  .etudiants-table th,
+  .etudiants-table td {
+    padding: 6px; /* cellules plus compactes */
+    text-align: center;
+  }
+
+  .table-container {
+    overflow-x: auto; /* scroll horizontal de sécurité */
+  }
+}

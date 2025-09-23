@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin – Gestion des absences</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin_absences.css" />
+</head>
+<body>
+<div class="dashboard">
+  <!-- Bouton menu mobile -->
+  <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Espace Admin</h2>
+    <nav>
+      <button id="logoutBtn">Déconnexion</button>
+      <ul>
+        <li><a href="../admin_dashboard/admin_dashboard.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a></li>
+        <li><a href="../admin_etudiants/etudiants.html"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+        <li><a href="../admin_calendrier/admin_calendrier.html"><i class="fa-solid fa-calendar-days"></i> Calendrier</a></li>
+        <li><a href="../admin_matieres/admin_matieres.html"><i class="fa-solid fa-book"></i> Matières</a></li>
+        <li><a href="../admin_relevé/admin_releve.html"><i class="fa-solid fa-file-lines"></i> Relevé</a></li>
+        <li><a href="../admin_notes/admin_notes.html"><i class="fa-solid fa-chart-column"></i> Notes</a></li>
+        <li class="active"><a href="../admin_absences/admin_absences.html"><i class="fa-solid fa-user-clock"></i> Absences</a></li>
+        <li><a href="../admin_messages/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="container">
+    <header class="header">
+      <h1>Gestion des absences (Admin)</h1>
+      <div class="filters">
+        <label>Niveau
+          <select id="niveauSelect">
+            <option>Licence 1</option>
+            <option>Licence 2</option>
+            <option>Licence 3 - RT</option>
+            <option>Licence 3 - ASR</option>
+          </select>
+        </label>
+        <label>Semestre
+          <select id="semestreSelect">
+            <option>Semestre 1</option>
+            <option>Semestre 2</option>
+          </select>
+        </label>
+        <button id="btnChargerEtudiants">Charger Étudiants</button>
+      </div>
+    </header>
+
+    <section id="erreur" class="error" style="display:none;"></section>
+    <section class="grid">
+      <div class="card" id="max-contain">
+        <div class="card-header">
+          <h2>Étudiants</h2>
+          <button class="toggle-card"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <ul id="listeEtudiants" class="list"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 id="AbsencesTitle">Absences de l’étudiant sélectionné</h2>
+          <button class="toggle-card"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <div class="toolbar">
+          <button id="btnAjouterLigne">+ Ajouter une absence</button>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date d’absence</th>
+                <th>Heure début</th>
+                <th>Heure fin</th>
+                <th>Durée (h)</th>
+                <th>Statut</th>
+                <th>Date de justification</th>
+                <th>Matières</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyAbsences"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    
+    
+    <section class="card">
+      <div class="card-header">
+        <h2>Vue globale du niveau / semestre</h2>
+        <div class="toolbar">
+        <button id="btnChargerVueGlobale">Voir toutes les absences</button>
+      </div>
+      </div>
+      
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Étudiant</th>
+              <th>Matières</th>
+              <th>Date d’absence</th>
+              <th>Heure début</th>
+              <th>Heure fin</th>
+              <th>Durée (h)</th>
+              <th>Statut</th>
+              <th>Date de justification</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyGlobal"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="admin_absences.js"></script>
+</body>
+</html>

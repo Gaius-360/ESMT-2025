@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion Étudiant</title>
+  <link rel="stylesheet" href="etudiant_connexion.css">
+</head>
+<body>
+  <div class="container">
+    <img src="../logo/logo.png" alt="" style="width: 150px; margin-left: 120px;">
+    <h2>Connexion Étudiant</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Adresse Email</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" required />
+      </div>
+      <button type="submit">Se connecter</button>
+      <div id="message"></div>
+    </form>
+    <p>Pas inscrit(e) ? <a href="../Inscription/etudiant_register.html">Inscription</a></p>
+  </div>
+
+  <script src="etudiant_connexion.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
    Avec filtre par niveau, semestre et période (from/to)
 */
 
-const API = "http://localhost:5000/api";
+const API = "https://esmt-2025.onrender.com/api";
 
 // DOM
 const niveauFilter = document.getElementById("niveauFilter");
@@ -355,7 +355,7 @@ document.getElementById("passwordForm").addEventListener("submit", async (e) => 
   }
 
   try {
-    const res = await fetch("http://localhost:5000/api/admin/change-password", {
+    const res = await fetch("https://esmt-2025.onrender.com/api/admin/change-password", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

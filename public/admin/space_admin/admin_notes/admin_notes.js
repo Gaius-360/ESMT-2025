@@ -61,7 +61,7 @@ async function chargerEtudiants(niveau) {
   etudiantSelect.innerHTML = '<option value="">-- Choisir un étudiant --</option>';
 
   try {
-    const res = await fetch(`http://localhost:5000/api/etudiants/${niveau}`);
+    const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants/${niveau}`);
     if (!res.ok) throw new Error("Erreur lors du chargement des étudiants");
     const etudiants = await res.json();
 
@@ -90,12 +90,12 @@ async function chargerMatieresPourEtudiant(niveau, semestre, etudiantId) {
 
   try {
     // Récupérer matières du niveau + semestre
-    const resMatieres = await fetch(`http://localhost:5000/api/matieres/niveau/${niveau}/semestre/${semestre}`);
+    const resMatieres = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${niveau}/semestre/${semestre}`);
     if (!resMatieres.ok) throw new Error("Erreur lors du chargement des matières");
     const matieres = await resMatieres.json();
 
     // Récupérer notes de l'étudiant
-    const resNotes = await fetch(`http://localhost:5000/api/notes/${etudiantId}`);
+    const resNotes = await fetch(`https://esmt-2025.onrender.com/api/notes/${etudiantId}`);
     if (!resNotes.ok) throw new Error("Erreur lors du chargement des notes");
     const notesExistantes = await resNotes.json();
 
@@ -148,7 +148,7 @@ function activerEnregistrement(etudiantId) {
 
 
       try {
-        const res = await fetch("http://localhost:5000/api/notes", {
+        const res = await fetch("https://esmt-2025.onrender.com/api/notes", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",

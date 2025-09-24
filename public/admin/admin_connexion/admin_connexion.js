@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch("http://localhost:5000/api/admin/login", {
+      const response = await fetch("https://esmt-2025.onrender.com/api/admin/login", {
         method: "POST",
         credentials: "include", // important pour les cookies
         headers: {

@@ -11,7 +11,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
   const message = document.getElementById("message");
 
   try {
-    const response = await fetch("http://localhost:5000/api/etudiants/register", {
+    const response = await fetch("https://esmt-2025.onrender.com/api/etudiants/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

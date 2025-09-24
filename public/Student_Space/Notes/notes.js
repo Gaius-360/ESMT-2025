@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Vérifier si étudiant connecté et récupérer ses infos
-    const resCheck = await fetch("http://localhost:5000/api/etudiants/check", {
+    const resCheck = await fetch("https://esmt-2025.onrender.com/api/etudiants/check", {
       credentials: "include"
     });
     const dataCheck = await resCheck.json();
@@ -56,12 +56,12 @@ async function chargerNotes(niveau, semestreNumero, etudiantId) {
 
   try {
     // Récupérer matières du niveau + semestre
-    const resMatieres = await fetch(`http://localhost:5000/api/matieres/niveau/${niveau}/semestre/${semestreTexte}`);
+    const resMatieres = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${niveau}/semestre/${semestreTexte}`);
     if (!resMatieres.ok) throw new Error("Erreur lors du chargement des matières");
     const matieres = await resMatieres.json();
 
     // Récupérer notes de l'étudiant
-    const resNotes = await fetch(`http://localhost:5000/api/notes/${etudiantId}`);
+    const resNotes = await fetch(`https://esmt-2025.onrender.com/api/notes/${etudiantId}`);
     if (!resNotes.ok) throw new Error("Erreur lors du chargement des notes");
     const notesExistantes = await resNotes.json();
 
@@ -133,8 +133,8 @@ function initModales() {
     try {
       const isAdminPage = window.location.pathname.includes("admin");
       const url = isAdminPage
-        ? "http://localhost:5000/api/admin/logout"
-        : "http://localhost:5000/api/etudiants/logout";
+        ? "https://esmt-2025.onrender.com/api/admin/logout"
+        : "https://esmt-2025.onrender.com/api/etudiants/logout";
       const res = await fetch(url, { method: "POST", credentials: "include" });
       if (res.ok) {
         window.location.href = isAdminPage ? "/admin_login.html" : "/frontend/Student_Space/connexion/etudiant_connexion.html";

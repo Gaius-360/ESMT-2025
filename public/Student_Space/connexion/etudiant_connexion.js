@@ -6,7 +6,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
   const message = document.getElementById("message");
 
   try {
-    const response = await fetch("http://localhost:5000/api/etudiants/login", {
+    const response = await fetch("https://esmt-2025.onrender.com/api/etudiants/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

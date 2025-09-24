@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       if (id) {
         // Modifier matière
-        const res = await fetch(`http://localhost:5000/api/matieres/${id}`, {
+        const res = await fetch(`https://esmt-2025.onrender.com/api/matieres/${id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ nom, coefficient, semestre }),
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Matière modifiée avec succès");
       } else {
         // Ajouter nouvelle matière
-        const res = await fetch(`http://localhost:5000/api/matieres`, {
+        const res = await fetch(`https://esmt-2025.onrender.com/api/matieres`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ nom, coefficient, niveau: niveauActuel, semestre }),
@@ -98,7 +98,7 @@ async function chargerMatieres(niveau) {
   tbody.innerHTML = "<tr><td colspan='4'>Chargement...</td></tr>";
 
   try {
-    const res = await fetch(`http://localhost:5000/api/matieres/niveau/${niveau}`);
+    const res = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${niveau}`);
     if (!res.ok) throw new Error("Erreur lors du chargement des matières");
     const matieres = await res.json();
 
@@ -149,7 +149,7 @@ function activerActionsMatieres() {
       const id = btn.dataset.id;
       if (confirm("Voulez-vous vraiment supprimer cette matière ?")) {
         try {
-          const res = await fetch(`http://localhost:5000/api/matieres/${id}`, {
+          const res = await fetch(`https://esmt-2025.onrender.com/api/matieres/${id}`, {
             method: "DELETE",
           });
           if (!res.ok) throw new Error("Erreur lors de la suppression");

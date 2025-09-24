@@ -1,10 +1,10 @@
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://esmt-2025.onrender.com";
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
     const url = window.location.pathname.includes("admin") 
-      ? "http://localhost:5000/api/admin/logout"
-      : "http://localhost:5000/api/etudiants/logout";
+      ? "https://esmt-2025.onrender.com/api/admin/logout"
+      : "https://esmt-2025.onrender.com/api/etudiants/logout";
     const res = await fetch(url, { method:"POST", credentials:"include" });
     if(res.ok){
       window.location.href = window.location.pathname.includes("admin")

@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://esmt-2025.onrender.com";
 const el = (id) => document.getElementById(id);
 
 const niveauSelect = el("niveauSelect");

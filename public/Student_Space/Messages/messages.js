@@ -20,7 +20,7 @@ async function init() {
 
 async function fetchMe() {
   try {
-    const res = await fetch("http://localhost:5000/api/etudiants/me", { credentials: "include" });
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/me", { credentials: "include" });
     if (!res.ok) throw new Error("Non connecté (étudiant)");
     me = await res.json();
   } catch (err) {
@@ -30,7 +30,7 @@ async function fetchMe() {
 }
 
 function initSocket() {
-  socket = io("http://localhost:5000", { withCredentials: true });
+  socket = io("https://esmt-2025.onrender.com", { withCredentials: true });
 
   socket.on("connect", () => {
     console.log("Socket connecté :", socket.id);
@@ -49,7 +49,7 @@ function initSocket() {
 
 async function fetchAdmins() {
   try {
-    const res = await fetch("http://localhost:5000/api/admin/list", { credentials: "include" });
+    const res = await fetch("https://esmt-2025.onrender.com/api/admin/list", { credentials: "include" });
     if (!res.ok) throw new Error("Erreur fetch admins");
     const admins = await res.json();
 
@@ -75,7 +75,7 @@ async function selectAdmin(admin) {
 async function fetchMessages() {
   if (!selectedAdminId) return;
   try {
-    const res = await fetch(`http://localhost:5000/api/messages/student/thread/${selectedAdminId}`, {
+    const res = await fetch(`https://esmt-2025.onrender.com/api/messages/student/thread/${selectedAdminId}`, {
       credentials: "include",
     });
     if (!res.ok) throw new Error("Erreur fetch messages");
@@ -92,7 +92,7 @@ function appendMessage(msg) {
   const fromSelf = msg.sender && me && msg.sender._id === me._id;
   const div = document.createElement("div");
   div.className = fromSelf ? "message self" : "message other";
-const backendURL = "http://localhost:5000";
+const backendURL = "https://esmt-2025.onrender.com";
   div.innerHTML = `
   <div class="bubble">
     <div class="author">${msg.sender?.fullname ?? ""}</div>
@@ -123,7 +123,7 @@ async function sendMessage() {
   if (file) formData.append("file", file);
 
   try {
-    const res = await fetch("http://localhost:5000/api/messages/student/send", {
+    const res = await fetch("https://esmt-2025.onrender.com/api/messages/student/send", {
       method: "POST",
       body: formData,
       credentials: "include",

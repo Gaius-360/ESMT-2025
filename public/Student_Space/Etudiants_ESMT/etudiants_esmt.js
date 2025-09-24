@@ -8,7 +8,7 @@ let sortAsc = true;
 // Récupérer les étudiants
 async function fetchEtudiants() {
   try {
-    const res = await fetch("http://localhost:5000/api/etudiants", {
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants", {
       credentials: "include"
     });
     etudiants = await res.json();
@@ -65,8 +65,8 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
     const isAdminPage = window.location.pathname.includes("admin");
     const url = isAdminPage
-      ? "http://localhost:5000/api/admin/logout"
-      : "http://localhost:5000/api/etudiants/logout";
+      ? "https://esmt-2025.onrender.com/api/admin/logout"
+      : "https://esmt-2025.onrender.com/api/etudiants/logout";
 
     const res = await fetch(url, { method: "POST", credentials: "include" });
     if (res.ok) {

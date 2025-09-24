@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const niveau = niveauSelect.value;
     tableauBody.innerHTML = "<tr><td colspan='7'>Chargement...</td></tr>";
     try {
-      const res = await fetch(`http://localhost:5000/api/etudiants/${niveau}`);
+      const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants/${niveau}`);
       const etudiants = await res.json();
 
       if (!etudiants.length) {
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = btn.dataset.id;
         if (!confirm("Voulez-vous supprimer définitivement cet étudiant ?")) return;
         try {
-          await fetch(`http://localhost:5000/api/etudiants/${id}`, { method: "DELETE" });
+          await fetch(`https://esmt-2025.onrender.com/api/etudiants/${id}`, { method: "DELETE" });
           chargerEtudiants();
         } catch (err) { 
           console.error(err); 

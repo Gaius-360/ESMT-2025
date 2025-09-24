@@ -32,7 +32,7 @@ async function init() {
 // --- FETCH ADMIN ---
 async function fetchAdmin() {
   try {
-    const res = await fetch("http://localhost:5000/api/admin/me", { credentials: "include" });
+    const res = await fetch("https://esmt-2025.onrender.com/api/admin/me", { credentials: "include" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     admin = await res.json();
   } catch (err) {
@@ -43,7 +43,7 @@ async function fetchAdmin() {
 
 // --- SOCKET.IO ---
 function initSocket() {
-  socket = io("http://localhost:5000", { withCredentials: true });
+  socket = io("https://esmt-2025.onrender.com", { withCredentials: true });
 
   socket.on("connect", () => {
     if (admin && admin._id) socket.emit("joinRoom", admin._id);
@@ -76,7 +76,7 @@ function initNotificationUI() {
 
 async function fetchNotifications() {
   try {
-    const res = await fetch("http://localhost:5000/api/notifications/admin", { credentials: "include" });
+    const res = await fetch("https://esmt-2025.onrender.com/api/notifications/admin", { credentials: "include" });
     if (!res.ok) return;
     notifications = await res.json();
     updateNotificationUI();
@@ -118,7 +118,7 @@ async function markAsReadBySender(senderId) {
   try {
     const senderNotifications = notifications.filter(n => n.sender?._id === senderId && !n.isRead);
     for (const notif of senderNotifications) {
-      await fetch(`http://localhost:5000/api/notifications/${notif._id}/read`, { method: "PATCH", credentials: "include" });
+      await fetch(`https://esmt-2025.onrender.com/api/notifications/${notif._id}/read`, { method: "PATCH", credentials: "include" });
       notif.isRead = true;
     }
     updateNotificationUI();
@@ -134,7 +134,7 @@ function initStudentSearch() {
     if (!query) return renderHint();
 
     try {
-      const res = await fetch(`http://localhost:5000/api/etudiants/search?q=${encodeURIComponent(query)}`, { credentials: "include" });
+      const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants/search?q=${encodeURIComponent(query)}`, { credentials: "include" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const students = await res.json();
 
@@ -195,7 +195,7 @@ function selectLevel(level) {
 // --- MESSAGES ---
 async function fetchMessages(studentId) {
   try {
-    const res = await fetch(`http://localhost:5000/api/messages/admin/thread/${studentId}`, { credentials: "include" });
+    const res = await fetch(`https://esmt-2025.onrender.com/api/messages/admin/thread/${studentId}`, { credentials: "include" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const messages = await res.json();
     chatMessages.innerHTML = "";
@@ -215,7 +215,7 @@ function addMessageToChat(msg) {
     <div class="bubble">
       <div class="author">${msg.sender?.fullname ?? ""}</div>
       <div class="content">${escapeHtml(msg.content || "")}</div>
-      ${msg.file ? `<div><a href="http://localhost:5000${msg.file}" target="_blank">[Fichier]</a></div>` : ""}
+      ${msg.file ? `<div><a href="https://esmt-2025.onrender.com${msg.file}" target="_blank">[Fichier]</a></div>` : ""}
       <div class="time">${new Date(msg.createdAt).toLocaleString()}</div>
     </div>
   `;
@@ -243,8 +243,8 @@ async function sendMessage() {
 
   try {
     const url = targetType === "student"
-      ? "http://localhost:5000/api/messages/admin/send"
-      : "http://localhost:5000/api/messages/admin/send/level";
+      ? "https://esmt-2025.onrender.com/api/messages/admin/send"
+      : "https://esmt-2025.onrender.com/api/messages/admin/send/level";
 
     const res = await fetch(url, { method: "POST", body: formData, credentials: "include" });
     const msg = await res.json();

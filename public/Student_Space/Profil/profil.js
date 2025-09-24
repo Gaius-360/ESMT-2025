@@ -8,8 +8,8 @@
     try {
       const isAdminPage = window.location.pathname.includes("admin");
       const url = isAdminPage
-        ? "http://localhost:5000/api/admin/logout"
-        : "http://localhost:5000/api/etudiants/logout";
+        ? "https://esmt-2025.onrender.com/api/admin/logout"
+        : "https://esmt-2025.onrender.com/api/etudiants/logout";
       const res = await fetch(url, { method: "POST", credentials: "include" });
       if (res.ok) {
         window.location.href = isAdminPage ? "/admin_login.html" : "/frontend/Student_Space/connexion/etudiant_connexion.html";
@@ -31,7 +31,7 @@
     const saveBtn = document.getElementById("saveBtn");
 
     try {
-      const res = await fetch("http://localhost:5000/api/etudiants/profil", { credentials: "include" });
+      const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/profil", { credentials: "include" });
       if (!res.ok) { message.textContent = "Veuillez vous reconnecter."; message.style.color = "red"; return; }
       const user = await res.json();
       fullname.textContent = user.fullname || "—";
@@ -58,7 +58,7 @@
       }
       saveBtn.disabled = true; saveBtn.textContent = "Enregistrement...";
       try {
-        const res = await fetch("http://localhost:5000/api/etudiants/profil", {
+        const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/profil", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

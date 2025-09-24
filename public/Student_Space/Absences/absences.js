@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://esmt-2025.onrender.com";
 const el = (id) => document.getElementById(id);
 const semestreSelect = el("semestreSelect");
 const tbodyAbsences = el("tbodyAbsences");
@@ -52,7 +52,7 @@ async function loadMesAbsences(){
 // -------- Déconnexion --------
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/etudiants/logout", { method: "POST", credentials: "include" });
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/logout", { method: "POST", credentials: "include" });
     if (res.ok) window.location.href = "/frontend/Student_Space/connexion/etudiant_connexion.html";
   } catch (err) { console.error("Erreur déconnexion :", err); }
 });

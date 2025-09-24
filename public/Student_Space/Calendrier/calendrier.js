@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!niveau) return alert('Veuillez sélectionner un niveau.');
 
     try {
-      const res = await fetch(`http://localhost:5000/api/emplois/pdf/${encodeURIComponent(niveau)}`, {
+      const res = await fetch(`https://esmt-2025.onrender.com/api/emplois/pdf/${encodeURIComponent(niveau)}`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const isAdminPage = window.location.pathname.includes("admin");
       const url = isAdminPage
-        ? "http://localhost:5000/api/admin/logout"
-        : "http://localhost:5000/api/etudiants/logout";
+        ? "https://esmt-2025.onrender.com/api/admin/logout"
+        : "https://esmt-2025.onrender.com/api/etudiants/logout";
       const res = await fetch(url, { method: "POST", credentials: "include" });
       if (res.ok) {
         window.location.href = isAdminPage ? "/admin_login.html" : "/frontend/Student_Space/connexion/etudiant_connexion.html";

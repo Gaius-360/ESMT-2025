@@ -7,7 +7,7 @@ uploadForm.addEventListener("submit", async e => {
   e.preventDefault();
   const formData = new FormData(e.target);
   try {
-    const res = await fetch("http://localhost:5000/api/emplois/import", {
+    const res = await fetch("https://esmt-2025.onrender.com/api/emplois/import", {
       method: "POST",
       body: formData,
       credentials: "include"
@@ -46,7 +46,7 @@ document.getElementById("voirPdf").addEventListener("click", async () => {
   const niveau = document.getElementById("niveauPreview").value;
   if(!niveau){ alert("Veuillez choisir un niveau"); return; }
   try {
-    const res = await fetch(`http://localhost:5000/api/emplois/pdf/${encodeURIComponent(niveau)}`, {credentials:"include"});
+    const res = await fetch(`https://esmt-2025.onrender.com/api/emplois/pdf/${encodeURIComponent(niveau)}`, {credentials:"include"});
     if(!res.ok){ alert("Aucun emploi trouvé pour ce niveau."); return; }
     const blob = await res.blob();
     renderPDF(blob);

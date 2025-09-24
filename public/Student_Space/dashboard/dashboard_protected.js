@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 1️⃣ Vérification de connexion étudiant
   let etudiantId;
   try {
-    const res = await fetch("http://localhost:5000/api/etudiants/check", {
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/check", {
       method: "GET",
       credentials: "include"
     });
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 3️⃣ Fonction pour charger les 4 dernières notes
   async function chargerDernieresNotes() {
     try {
-      const res = await fetch(`http://localhost:5000/api/notes/${etudiantId}/recentes`);
+      const res = await fetch(`https://esmt-2025.onrender.com/api/notes/${etudiantId}/recentes`);
       const notes = await res.json();
 
       const liste = document.getElementById("dernieres-notes-list");
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 4️⃣ Fonction pour charger les 4 dernières absences
 async function chargerDernieresAbsences() {
   try {
-    const res = await fetch("http://localhost:5000/api/etudiants/absences/me/recentes", {
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/absences/me/recentes", {
       credentials: "include"
     });
     const absences = await res.json();
@@ -118,8 +118,8 @@ window.addEventListener("click", (e) => {
     try {
       const isAdminPage = window.location.pathname.includes("admin");
       const url = isAdminPage
-        ? "http://localhost:5000/api/admin/logout"
-        : "http://localhost:5000/api/etudiants/logout";
+        ? "https://esmt-2025.onrender.com/api/admin/logout"
+        : "https://esmt-2025.onrender.com/api/etudiants/logout";
       const res = await fetch(url, { method: "POST", credentials: "include" });
       if (res.ok) {
         window.location.href = isAdminPage ? "/admin_login.html" : "/frontend/Student_Space/connexion/etudiant_connexion.html";

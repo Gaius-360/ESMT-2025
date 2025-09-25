@@ -48,6 +48,21 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// ✅ Supprimer définitivement un étudiant
+router.delete("/:id", requireAdmin, async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Étudiant non trouvé" });
+    }
+    res.json({ message: "Étudiant supprimé avec succès" });
+  } catch (err) {
+    console.error("Erreur suppression étudiant :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+
 // ✅ Vérification session étudiant
 router.get("/check", async (req, res) => {
   const { etudiantId } = req.cookies;

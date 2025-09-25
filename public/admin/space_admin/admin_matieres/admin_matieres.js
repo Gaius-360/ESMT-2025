@@ -176,7 +176,7 @@ function activerActionsMatieres() {
 
         if (res.ok) {
           window.location.href = isAdminPage 
-            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
+            ? "/backend/public/admin/space_admin/admin_connexion/admin_connexion.html" 
             : "/login.html";
         }
       } catch (err) {

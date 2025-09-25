@@ -7,7 +7,7 @@
   document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
     const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/logout", { method: "POST", credentials: "include" });
-    if (res.ok) window.location.href = "/backend/public/Student_Space/connexion/etudiant_connexion.html";
+    if (res.ok) window.location.href = "./connexion/etudiant_connexion.html";
   } catch (err) { console.error("Erreur déconnexion :", err); }
 });
 

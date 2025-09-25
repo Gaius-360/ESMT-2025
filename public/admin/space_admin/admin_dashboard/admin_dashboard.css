@@ -16,7 +16,8 @@ body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);
 /* Layout */
 .dashboard{display:flex;min-height:100vh;}
 .sidebar{
-  width:220px; 
+  width:220px;
+  overflow: auto;
   background-color:#002d73; 
   color:#fff; 
   padding:20px; 

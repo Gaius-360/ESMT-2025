@@ -5,19 +5,11 @@
 
   // Déconnexion
   document.getElementById("logoutBtn").addEventListener("click", async () => {
-    try {
-      const isAdminPage = window.location.pathname.includes("admin");
-      const url = isAdminPage
-        ? "https://esmt-2025.onrender.com/api/admin/logout"
-        : "https://esmt-2025.onrender.com/api/etudiants/logout";
-      const res = await fetch(url, { method: "POST", credentials: "include" });
-      if (res.ok) {
-        window.location.href = isAdminPage ? "/admin_login.html" : "/frontend/Student_Space/connexion/etudiant_connexion.html";
-      }
-    } catch (err) {
-      console.error("Erreur déconnexion :", err);
-    }
-  });
+  try {
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/logout", { method: "POST", credentials: "include" });
+    if (res.ok) window.location.href = "/backend/public/Student_Space/connexion/etudiant_connexion.html";
+  } catch (err) { console.error("Erreur déconnexion :", err); }
+});
 
   document.addEventListener("DOMContentLoaded", async () => {
     const fullname = document.getElementById("fullname");

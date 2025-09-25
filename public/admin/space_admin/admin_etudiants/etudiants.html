@@ -71,8 +71,8 @@
       try {
         const isAdminPage = window.location.pathname.includes("admin");
         const url = isAdminPage
-          ? "http://localhost:5000/api/admin/logout"
-          : "http://localhost:5000/api/etudiants/logout";
+          ? "https://esmt-2025.onrender.com/api/admin/logout"
+          : "https://esmt-2025.onrender.com/api/etudiants/logout";
 
         const res = await fetch(url, {
           method: "POST",
@@ -81,7 +81,7 @@
 
         if (res.ok) {
           window.location.href = isAdminPage 
-            ? "/frontend/admin/admin_connexion/admin_connexion.html" 
+            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
             : "/login.html";
         }
       } catch (err) {

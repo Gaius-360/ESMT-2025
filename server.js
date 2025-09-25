@@ -14,7 +14,7 @@ const server = http.createServer(app);
 // --- Socket.IO ---
 const ALLOWED_ORIGINS = [
   "http://localhost:5501",
-  "http://127.0.0.1:5500",
+  "https://esmt-2025.onrender.com",
   process.env.CLIENT_ORIGIN
 ];
 

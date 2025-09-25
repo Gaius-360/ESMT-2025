@@ -390,6 +390,28 @@ document.getElementById("logoutBtn")?.addEventListener("click", async ()=>{
   catch(err){ console.error(err); }
 });
 
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        const isAdminPage = window.location.pathname.includes("admin");
+        const url = isAdminPage
+          ? "https://esmt-2025.onrender.com/api/admin/logout"
+          : "https://esmt-2025.onrender.com/api/etudiants/logout";
+
+        const res = await fetch(url, {
+          method: "POST",
+          credentials: "include"
+        });
+
+        if (res.ok) {
+          window.location.href = isAdminPage 
+            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
+            : "/login.html";
+        }
+      } catch (err) {
+        console.error("Erreur déconnexion :", err);
+      }
+    });
+
 // Auto-load
 window.addEventListener("DOMContentLoaded", loadAll);
 window.addEventListener("DOMContentLoaded", ()=>loadRecentActions());

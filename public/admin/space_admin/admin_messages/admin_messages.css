@@ -127,6 +127,7 @@ body { display: flex; height: 100vh; overflow: hidden; }
   max-height: 300px;
   background-color: white;
   border: 1px solid #ccc;
+  color: #2c3e50;
   border-radius: 5px;
   overflow-y: auto;
   display: none;
@@ -152,10 +153,7 @@ body { display: flex; height: 100vh; overflow: hidden; }
   background-color: #f0f8ff;
 }
 
-.notification-menu li:hover {
-  background-color: #e1f0ff;
-  color: #2c3e50;
-}
+
 
 
 /* Réactivité */

@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
       item.addEventListener("click", async () => {
   try {
     const deleteUrl = n.type === "message"
-      ? `https://esmt-2025.onrender.com/api/notifications/${n._id}`
-      : `https://esmt-2025.onrender.com/api/notifOnlyStudent/${n._id}`;
+      ? `http://localhost:5000/api/notifications/${n._id}`
+      : `http://localhost:5000/api/notifOnlyStudent/${n._id}`;
 
     const res = await fetch(deleteUrl, { method: "DELETE", credentials: "include" });
 
@@ -73,10 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function fetchNotifications() {
     try {
-      const resGeneral = await fetch("https://esmt-2025.onrender.com/api/notifOnlyStudent/me", { credentials: "include" });
+      const resGeneral = await fetch("http://localhost:5000/api/notifOnlyStudent/me", { credentials: "include" });
       const notifsGeneral = await resGeneral.json();
 
-      const resMessages = await fetch("https://esmt-2025.onrender.com/api/notifications/student", { credentials: "include" });
+      const resMessages = await fetch("http://localhost:5000/api/notifications/student", { credentials: "include" });
       const notifsMessages = (await resMessages.json()).map(msg => ({
         _id: msg._id,
         message: msg.message || "Nouveau message",
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchNotifications();
 
   if (typeof io !== "undefined" && etudiantId) {
-    const socket = io("https://esmt-2025.onrender.com", { withCredentials: true });
+    const socket = io("http://localhost:5000", { withCredentials: true });
     socket.emit("joinRoom", etudiantId);
 
     socket.on("newNotification", (notif) => {

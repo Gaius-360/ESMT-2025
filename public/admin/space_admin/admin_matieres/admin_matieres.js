@@ -161,8 +161,9 @@ function activerActionsMatieres() {
       }
     });
   });
+}
 
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
+document.getElementById("logoutBtn").addEventListener("click", async () => {
       try {
         const isAdminPage = window.location.pathname.includes("admin");
         const url = isAdminPage
@@ -176,12 +177,10 @@ function activerActionsMatieres() {
 
         if (res.ok) {
           window.location.href = isAdminPage 
-            ? "/backend/public/admin/space_admin/admin_connexion/admin_connexion.html" 
+            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
             : "/login.html";
         }
       } catch (err) {
         console.error("Erreur déconnexion :", err);
       }
     });
-
-}

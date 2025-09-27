@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         card.appendChild(table); tableauxEl.appendChild(card);
       });
 
-    }catch(err){console.error(err);showError("Impossible de charger le relevé : "+err.message);}
+    }catch(err){console.error(err);showError("Modèle non disponible pour l'instant.");}
   }
 
   function showError(msg){erreurEl.textContent=msg;erreurEl.style.display="block";}

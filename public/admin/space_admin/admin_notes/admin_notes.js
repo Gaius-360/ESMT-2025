@@ -53,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
-// Charger les étudiants d’un niveau dans le select
 // Charger les étudiants d’un niveau dans le select
 async function chargerEtudiants(niveau) {
   const etudiantSelect = document.getElementById("etudiantSelect");

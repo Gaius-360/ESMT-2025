@@ -11,7 +11,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
       headers: {
         "Content-Type": "application/json"
       },
-      credentials: "include", // important pour envoyer le cookie
+      credentials: "include", 
       body: JSON.stringify({ email, password })
     });
 
@@ -21,7 +21,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
       message.style.color = "green";
       message.textContent = "Connexion réussie ! Redirection...";
       setTimeout(() => {
-        window.location.href = "../dashboard/dashboard_protected.html"; // redirection après connexion
+        window.location.href = "../dashboard/dashboard_protected.html"; 
       }, 1000);
     } else {
       message.style.color = "red";

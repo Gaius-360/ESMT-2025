@@ -1,4 +1,4 @@
-// messages.js (étudiant)
+
 let socket;
 let me = null;               // étudiant connecté
 let selectedAdminId = null;

@@ -1,5 +1,3 @@
-// admin_releve.js
-// Assure-toi que les IDs dans ton HTML correspondent à ceux utilisés ici.
 
 const API_BASE = "https://esmt-2025.onrender.com/api/releve";
 const API_ADMIN = "https://esmt-2025.onrender.com/api/admin";
@@ -496,7 +494,7 @@ enregistrerModelBtn.addEventListener("click", async () => {
       }
     }
   }
-  // suite de ta sauvegarde...
+  // suite de ma sauvegarde...
 });
 
 // ---------- Auto-load au démarrage ----------
@@ -505,7 +503,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const connected = await checkAdmin();
   if (!connected) {
     console.warn("Admin non connecté : les opérations de création/modification/suppression nécessitent une connexion.");
-    // option : tu peux masquer les boutons sensibles si déconnecté
+    // option : je peux masquer les boutons sensibles si déconnecté
     // enregistrerModelBtn.disabled = true;
     // supprimerModelBtn.disabled = true;
   }

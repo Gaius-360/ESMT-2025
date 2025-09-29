@@ -10,7 +10,7 @@ const EmploiSchema = new mongoose.Schema(
       index: true,
       unique: true, // 1 seul emploi par niveau (le dernier remplace l'ancien)
     },
-    data: { type: Buffer, required: true },          // binaire PDF
+    data: { type: Buffer, required: true },          
     contentType: { type: String, default: "application/pdf" },
     size: { type: Number },
     uploadedAt: { type: Date, default: Date.now },

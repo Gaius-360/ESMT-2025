@@ -1,8 +1,3 @@
-/* admin_dashboard_advanced.js
-   KPIs + Charts + Matières + Recent Actions
-   Avec filtre par niveau, semestre et période (from/to)
-*/
-
 const API = "https://esmt-2025.onrender.com/api";
 
 // DOM

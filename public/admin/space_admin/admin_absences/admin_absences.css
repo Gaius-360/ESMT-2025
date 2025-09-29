@@ -9,11 +9,11 @@
   --border:1px solid #e0e0e0;
 }
 
-/* === Reset & Base === */
+
 *{box-sizing:border-box; margin:0; padding:0; font-family:'Inter', sans-serif;}
 body{background:var(--bg); color:var(--fg); min-height:100vh;}
 
-/* === Dashboard === */
+
 .dashboard{display:flex; min-height:100vh;}
 .sidebar{
   width:220px; 

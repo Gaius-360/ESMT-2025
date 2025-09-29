@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("https://esmt-2025.onrender.com/api/admin/login", {
         method: "POST",
-        credentials: "include", // important pour les cookies
+        credentials: "include", 
         headers: {
           "Content-Type": "application/json",
         },
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         // Connexion réussie
-        window.location.href = "../space_admin/admin_dashboard/admin_dashboard.html"; // redirection
+        window.location.href = "../space_admin/admin_dashboard/admin_dashboard.html"; 
       } else {
         message.textContent = data.message || "Échec de la connexion.";
       }

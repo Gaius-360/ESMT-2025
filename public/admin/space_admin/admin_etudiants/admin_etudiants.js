@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = btn.dataset.id;
         if (!confirm("Voulez-vous supprimer définitivement cet étudiant ?")) return;
         try {
-          await fetch(`http://localhost:5000/api/etudiants/${id}`, { method: "DELETE" });
+          await fetch(`https://esmt-2025.onrender.com/api/etudiants/${id}`, { method: "DELETE" });
           chargerEtudiants();
         } catch (err) { 
           console.error(err); 

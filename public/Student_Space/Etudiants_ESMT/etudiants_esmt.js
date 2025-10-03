@@ -60,6 +60,54 @@ sortNameBtn.addEventListener("click", () => {
   displayEtudiants(etudiants);
 });
 
+const searchInput = document.getElementById("searchInput");
+const studentCount = document.getElementById("studentCount");
+
+// Afficher les étudiants + MAJ compteur
+function displayEtudiants(list) {
+  if (!list || list.length === 0) {
+    tableBody.innerHTML = "<tr><td colspan='3'>Aucun étudiant trouvé</td></tr>";
+    studentCount.textContent = "Total : 0";
+    return;
+  }
+
+  tableBody.innerHTML = "";
+  list.forEach((e) => {
+    const tr = document.createElement("tr");
+    if (e.gender === "Femme") tr.classList.add("femme");
+    else if (e.gender === "Homme") tr.classList.add("homme");
+
+    tr.innerHTML = `
+      <td>${e.fullname}</td>
+      <td>${e.phone || "N/A"}</td>
+      <td>${e.level}</td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  // MAJ compteur
+  studentCount.textContent = "Total : " + list.length;
+}
+
+// Fonction pour supprimer les accents et mettre en minuscule
+function normalizeString(str) {
+  return str
+    .normalize("NFD")              // Décompose les accents
+    .replace(/[\u0300-\u036f]/g, "") // Supprime les diacritiques
+    .toLowerCase();
+}
+
+// Recherche rapide (sans accent + insensible à la casse)
+searchInput.addEventListener("input", () => {
+  const searchValue = normalizeString(searchInput.value.trim());
+  const filtered = etudiants.filter(e =>
+    normalizeString(e.fullname).includes(searchValue)
+  );
+  displayEtudiants(filtered);
+});
+
+
+
 // Déconnexion
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {

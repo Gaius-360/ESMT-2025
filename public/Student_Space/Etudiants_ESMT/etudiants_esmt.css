@@ -231,6 +231,19 @@ main h1 {
   z-index: 1100;
 }
 
+#searchInput {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  flex-grow: 1;
+}
+
+#studentCount {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+
 /* Sidebar responsive */
 @media (max-width: 768px) {
   .menu-toggle {

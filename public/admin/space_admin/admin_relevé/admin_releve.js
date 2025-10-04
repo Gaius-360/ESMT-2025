@@ -1,4 +1,3 @@
-
 const API_BASE = "https://esmt-2025.onrender.com/api/releve";
 const API_ADMIN = "https://esmt-2025.onrender.com/api/admin";
 
@@ -15,8 +14,17 @@ const listeModeles = document.getElementById("listeModeles");
 const supprimerModelBtn = document.getElementById("supprimerModelBtn");
 const annulerEditionBtn = document.getElementById("annulerEditionBtn");
 
-let currentModel = null; // objet en édition (avec _id) ou null pour nouveau
+let currentModel = null;
 let matieresListe = [];
+
+// ---------- Mapping niveaux → semestres ----------
+const semestresParNiveau = {
+  "Licence 1": ["Semestre 1", "Semestre 2"],
+  "Licence 2": ["Semestre 3", "Semestre 4"],
+  "Licence 3 - RT": ["Semestre 5", "Semestre 6"],
+  "Licence 3 - ASR": ["Semestre 5", "Semestre 6"]
+};
+
 // ---------- Utilitaires ----------
 function escapeHtml(s) {
   if (!s) return "";
@@ -32,7 +40,6 @@ async function safeJson(res) {
   try {
     return JSON.parse(text);
   } catch (e) {
-    // texte non JSON — retourne texte brut
     return { __raw: text };
   }
 }
@@ -40,14 +47,11 @@ async function safeJson(res) {
 async function checkAdmin() {
   try {
     const res = await fetch(`${API_ADMIN}/check`, { credentials: "include" });
-    if (!res.ok) {
-      console.warn("Erreur check admin:", res.status);
-      return false;
-    }
+    if (!res.ok) return false;
     const data = await res.json();
     return !!data.connected;
   } catch (err) {
-    console.error("Erreur réseau checkAdmin:", err);
+    console.error("Erreur checkAdmin:", err);
     return false;
   }
 }
@@ -56,7 +60,19 @@ function showEditor(show = true) {
   editeur.style.display = show ? "block" : "none";
 }
 
-// ---------- Création des éléments DOM pour domaines/matières ----------
+// ---------- Gestion dynamique des semestres ----------
+function updateSemestres(niveau) {
+  const semestres = semestresParNiveau[niveau] || [];
+  semestreSelect.innerHTML = "";
+  semestres.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s;
+    opt.textContent = s;
+    semestreSelect.appendChild(opt);
+  });
+}
+
+// ---------- Création éléments domaines/matières ----------
 function createDomaineElement(domaine = { titre: "", matieres: [] }) {
   const wrapper = document.createElement("div");
   wrapper.className = "domaine";
@@ -86,65 +102,62 @@ function createDomaineElement(domaine = { titre: "", matieres: [] }) {
   addMatBtn.textContent = "+ Ajouter matière";
 
   function addMatiereRow(m = { ordre: matieresContainer.children.length + 1, nom: "", coefficient: 1 }) {
-  const row = document.createElement("div");
-  row.className = "matiere-row";
+    const row = document.createElement("div");
+    row.className = "matiere-row";
 
-  const ordreInput = document.createElement("input");
-  ordreInput.className = "matiere-ordre";
-  ordreInput.type = "number";
-  ordreInput.min = "1";
-  ordreInput.style.width = "60px";
-  ordreInput.value = m.ordre || matieresContainer.children.length + 1;
+    const ordreInput = document.createElement("input");
+    ordreInput.className = "matiere-ordre";
+    ordreInput.type = "number";
+    ordreInput.min = "1";
+    ordreInput.style.width = "60px";
+    ordreInput.value = m.ordre || matieresContainer.children.length + 1;
 
-  const nomInput = document.createElement("input");
-  nomInput.className = "matiere-nom";
-  nomInput.placeholder = "Nom de la matière";
-  nomInput.value = m.nom || "";
-  nomInput.setAttribute("list", "matieresList");
+    const nomInput = document.createElement("input");
+    nomInput.className = "matiere-nom";
+    nomInput.placeholder = "Nom de la matière";
+    nomInput.value = m.nom || "";
+    nomInput.setAttribute("list", "matieresList");
 
-  const coefInput = document.createElement("input");
-  coefInput.className = "matiere-coef";
-  coefInput.type = "number";
-  coefInput.step = "0.1";
-  coefInput.style.width = "80px";
-  coefInput.value = (m.coefficient !== undefined && m.coefficient !== null) ? m.coefficient : 1;
+    const coefInput = document.createElement("input");
+    coefInput.className = "matiere-coef";
+    coefInput.type = "number";
+    coefInput.step = "0.1";
+    coefInput.style.width = "80px";
+    coefInput.value = (m.coefficient !== undefined && m.coefficient !== null) ? m.coefficient : 1;
 
-  nomInput.addEventListener("input", () => {
-    const val = nomInput.value.trim();
-    const matiere = matieresListe.find(x => x.nom === val);
-    if (matiere) {
-      coefInput.value = matiere.coefficient;
-      nomInput.setCustomValidity("");
-    } else {
-      coefInput.value = 1;
-      nomInput.setCustomValidity("Veuillez choisir une matière dans la liste.");
-    }
-  });
-
-  const supprMatBtn = document.createElement("button");
-  supprMatBtn.type = "button";
-  supprMatBtn.className = "suppr-mat";
-  supprMatBtn.textContent = "Supprimer";
-
-  row.appendChild(ordreInput);
-  row.appendChild(nomInput);
-  row.appendChild(coefInput);
-  row.appendChild(supprMatBtn);
-
-  supprMatBtn.addEventListener("click", () => {
-    row.remove();
-    // réindexer ordres
-    [...matieresContainer.querySelectorAll(".matiere-row")].forEach((r, i) => {
-      const o = r.querySelector(".matiere-ordre");
-      if (o) o.value = i + 1;
+    nomInput.addEventListener("input", () => {
+      const val = nomInput.value.trim();
+      const matiere = matieresListe.find(x => x.nom === val);
+      if (matiere) {
+        coefInput.value = matiere.coefficient;
+        nomInput.setCustomValidity("");
+      } else {
+        coefInput.value = 1;
+        nomInput.setCustomValidity("Veuillez choisir une matière dans la liste.");
+      }
     });
-  });
 
-  matieresContainer.appendChild(row);
-}
+    const supprMatBtn = document.createElement("button");
+    supprMatBtn.type = "button";
+    supprMatBtn.className = "suppr-mat";
+    supprMatBtn.textContent = "Supprimer";
 
+    row.appendChild(ordreInput);
+    row.appendChild(nomInput);
+    row.appendChild(coefInput);
+    row.appendChild(supprMatBtn);
 
-  // remplir avec les matières fournies
+    supprMatBtn.addEventListener("click", () => {
+      row.remove();
+      [...matieresContainer.querySelectorAll(".matiere-row")].forEach((r, i) => {
+        const o = r.querySelector(".matiere-ordre");
+        if (o) o.value = i + 1;
+      });
+    });
+
+    matieresContainer.appendChild(row);
+  }
+
   (domaine.matieres || []).forEach(m => addMatiereRow(m));
 
   addMatBtn.addEventListener("click", () => addMatiereRow({ ordre: matieresContainer.children.length + 1, nom: "", coefficient: 1 }));
@@ -160,7 +173,7 @@ function createDomaineElement(domaine = { titre: "", matieres: [] }) {
   return wrapper;
 }
 
-// ---------- Rendu éditeur depuis modèle ----------
+// ---------- Rendu éditeur ----------
 function renderEditorFromModel(model) {
   showEditor(true);
   titreInput.value = model.titre || "";
@@ -172,7 +185,7 @@ function renderEditorFromModel(model) {
   supprimerModelBtn.style.display = currentModel ? "inline-block" : "none";
 }
 
-// ---------- Collecter modèle depuis l'éditeur ----------
+// ---------- Collecte modèle ----------
 function collectModelFromEditor() {
   const domaines = [];
   for (const domEl of domainesList.querySelectorAll(".domaine")) {
@@ -195,7 +208,7 @@ function collectModelFromEditor() {
   };
 }
 
-// ---------- Charger modèles (liste) ----------
+// ---------- Charger modèles ----------
 async function loadModelesList(niveau, semestre) {
   try {
     const url = `${API_BASE}?niveau=${encodeURIComponent(niveau)}&semestre=${encodeURIComponent(semestre)}`;
@@ -219,7 +232,7 @@ async function loadModelesList(niveau, semestre) {
   }
 }
 
-// ---------- Render liste de modèles ----------
+// ---------- Rendu liste modèles ----------
 function renderModelesList(models) {
   listeModeles.innerHTML = "";
   if (!models || models.length === 0) {
@@ -253,25 +266,20 @@ function renderModelesList(models) {
     });
 
     dupBtn.addEventListener("click", async () => {
-      // charger puis ouvrir en tant que nouveau (sans _id)
       const model = await fetchModelById(m._id);
       if (!model) return;
       delete model._id;
       model.titre = (model.titre || "") + " (copie)";
       renderEditorFromModel(model);
-      currentModel = null; // nouvelle création
+      currentModel = null;
     });
   });
 }
 
-// ---------- fetch model by id ----------
+// ---------- Fetch modèle par ID ----------
 async function fetchModelById(id) {
   try {
     const res = await fetch(`${API_BASE}/${id}`, { credentials: "include" });
-    if (res.status === 401) {
-      alert("Accès refusé (401).");
-      return null;
-    }
     if (!res.ok) {
       const body = await safeJson(res);
       console.error("Erreur fetchModelById:", res.status, body);
@@ -292,66 +300,39 @@ async function loadAndOpenModel(id) {
   renderEditorFromModel(model);
 }
 
-// ---------- Création / Mise à jour / Suppression ----------
+// ---------- CRUD ----------
 async function createModel(payload) {
-  try {
-    const res = await fetch(API_BASE, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (res.status === 401) throw new Error("Non autorisé (vérifie ta session admin).");
-    if (!res.ok) {
-      const body = await safeJson(res);
-      console.error("Erreur createModel:", res.status, body);
-      throw new Error(body?.message || "Erreur création");
-    }
-    return await res.json();
-  } catch (err) {
-    throw err;
-  }
+  const res = await fetch(API_BASE, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error("Erreur création du modèle");
+  return await res.json();
 }
 
 async function updateModel(id, payload) {
-  try {
-    const res = await fetch(`${API_BASE}/${id}`, {
-      method: "PATCH",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (res.status === 401) throw new Error("Non autorisé (vérifie ta session admin).");
-    if (!res.ok) {
-      const body = await safeJson(res);
-      console.error("Erreur updateModel:", res.status, body);
-      throw new Error(body?.message || "Erreur mise à jour");
-    }
-    return await res.json();
-  } catch (err) {
-    throw err;
-  }
+  const res = await fetch(`${API_BASE}/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error("Erreur mise à jour du modèle");
+  return await res.json();
 }
 
 async function deleteModel(id) {
-  try {
-    const res = await fetch(`${API_BASE}/${id}`, {
-      method: "DELETE",
-      credentials: "include"
-    });
-    if (res.status === 401) throw new Error("Non autorisé (vérifie ta session admin).");
-    if (!res.ok) {
-      const body = await safeJson(res);
-      console.error("Erreur deleteModel:", res.status, body);
-      throw new Error(body?.message || "Erreur suppression");
-    }
-    return true;
-  } catch (err) {
-    throw err;
-  }
+  const res = await fetch(`${API_BASE}/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("Erreur suppression du modèle");
+  return true;
 }
 
-// ---------- Événements UI ----------
+// ---------- Gestion UI ----------
 chargerModelBtn.addEventListener("click", async () => {
   const niveau = niveauSelect.value;
   const semestre = semestreSelect.value;
@@ -370,38 +351,33 @@ ajouterDomaineBtn.addEventListener("click", () => {
 });
 
 enregistrerModelBtn.addEventListener("click", async () => {
+  const payload = collectModelFromEditor();
+  if (!payload.niveau || !payload.semestre) {
+    alert("Niveau et semestre requis.");
+    return;
+  }
+  // vérification matières
+  for (const dom of payload.domaines) {
+    for (const mat of dom.matieres) {
+      if (!matieresListe.find(m => m.nom === mat.nom)) {
+        alert(`La matière "${mat.nom}" n'est pas dans la liste des matières enregistrées.`);
+        return;
+      }
+    }
+  }
   try {
-    // Vérifier session admin
-    const isAdmin = await checkAdmin();
-    if (!isAdmin) {
-      alert("Vous devez être connecté en tant qu'administrateur pour enregistrer un modèle.");
-      return;
-    }
-
-    const payload = collectModelFromEditor();
-    // validation minimale
-    if (!payload.niveau || !payload.semestre) {
-      alert("Niveau et semestre requis.");
-      return;
-    }
-
     if (currentModel && currentModel._id) {
-      // mise à jour
       await updateModel(currentModel._id, payload);
       alert("Modèle mis à jour.");
-      // recharger la liste
-      chargerModelBtn.click();
     } else {
-      // création
       await createModel(payload);
       alert("Modèle créé.");
-      // recharger la liste
-      chargerModelBtn.click();
     }
     showEditor(false);
+    chargerModelBtn.click();
   } catch (err) {
     console.error(err);
-    alert(err.message || "Erreur lors de l'enregistrement du modèle.");
+    alert(err.message || "Erreur lors de l'enregistrement.");
   }
 });
 
@@ -409,11 +385,6 @@ supprimerModelBtn.addEventListener("click", async () => {
   if (!currentModel || !currentModel._id) return alert("Aucun modèle sélectionné.");
   if (!confirm("Confirmer la suppression du modèle ?")) return;
   try {
-    const isAdmin = await checkAdmin();
-    if (!isAdmin) {
-      alert("Vous devez être connecté en tant qu'administrateur.");
-      return;
-    }
     await deleteModel(currentModel._id);
     alert("Modèle supprimé.");
     showEditor(false);
@@ -424,33 +395,16 @@ supprimerModelBtn.addEventListener("click", async () => {
   }
 });
 
-annulerEditionBtn.addEventListener("click", () => {
-  showEditor(false);
-});
+annulerEditionBtn.addEventListener("click", () => showEditor(false));
 
-
-
+// ---------- Chargement matières ----------
 async function loadMatieresList(niveau, semestre) {
   try {
-    const res = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${encodeURIComponent(niveau)}/semestre/${encodeURIComponent(semestre)}`, {credentials:"include"});
-
+    const res = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${encodeURIComponent(niveau)}/semestre/${encodeURIComponent(semestre)}`, { credentials: "include" });
     if (!res.ok) throw new Error("Erreur récupération matières");
     matieresListe = await res.json();
-
-    function refreshDatalist() {
-      const datalist = document.getElementById("matieresList");
-      datalist.innerHTML = "";
-      matieresListe.forEach(m => {
-        const option = document.createElement("option");
-        option.value = m.nom;
-        option.dataset.coef = m.coefficient;
-        datalist.appendChild(option);
-      });
-    }
-
-
     refreshDatalist();
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     matieresListe = [];
     refreshDatalist();
@@ -459,7 +413,7 @@ async function loadMatieresList(niveau, semestre) {
 
 function refreshDatalist() {
   const datalist = document.getElementById("matieresList");
-  datalist.innerHTML = ""; 
+  datalist.innerHTML = "";
   matieresListe.forEach(m => {
     const option = document.createElement("option");
     option.value = m.nom;
@@ -468,46 +422,20 @@ function refreshDatalist() {
   });
 }
 
+// ---------- Événements changements niveau/semestre ----------
+niveauSelect.addEventListener("change", () => {
+  updateSemestres(niveauSelect.value);
+  loadMatieresList(niveauSelect.value, semestreSelect.value);
+});
+semestreSelect.addEventListener("change", () => {
+  loadMatieresList(niveauSelect.value, semestreSelect.value);
+});
 
-// Charger les matières à chaque changement niveau/semestre
-niveauSelect.addEventListener("change", () => loadMatieresList(niveauSelect.value, semestreSelect.value));
-semestreSelect.addEventListener("change", () => loadMatieresList(niveauSelect.value, semestreSelect.value));
-
-// Charger au démarrage aussi
+// ---------- Initialisation ----------
 window.addEventListener("DOMContentLoaded", async () => {
+  // Met à jour les semestres selon le niveau initial
+  updateSemestres(niveauSelect.value);
   await loadMatieresList(niveauSelect.value, semestreSelect.value);
-  // ton code checkAdmin...
-});
-
-// Validation avant sauvegarde
-enregistrerModelBtn.addEventListener("click", async () => {
-  // ...
-  const payload = collectModelFromEditor();
-  if (!payload) return; // validation a échoué
-
-  // vérification matières
-  for (const dom of payload.domaines) {
-    for (const mat of dom.matieres) {
-      if (!matieresListe.find(m => m.nom === mat.nom)) {
-        alert(`La matière "${mat.nom}" n'est pas dans la liste des matières enregistrées.`);
-        return;
-      }
-    }
-  }
-  // suite de ma sauvegarde...
-});
-
-// ---------- Auto-load au démarrage ----------
-window.addEventListener("DOMContentLoaded", async () => {
-  // vérifie si admin connecté — si pas connecté, laisse l'UI mais bloque les actions sensibles
-  const connected = await checkAdmin();
-  if (!connected) {
-    console.warn("Admin non connecté : les opérations de création/modification/suppression nécessitent une connexion.");
-    // option : je peux masquer les boutons sensibles si déconnecté
-    // enregistrerModelBtn.disabled = true;
-    // supprimerModelBtn.disabled = true;
-  }
-  // Charger la liste par défaut
   chargerModelBtn.click();
 });
 

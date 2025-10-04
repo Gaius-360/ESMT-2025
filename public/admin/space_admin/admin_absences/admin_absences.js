@@ -14,6 +14,32 @@ const erreurEl = el("erreur");
 let currentEtudiant = null;
 let matieresCache = [];
 
+// --------- Logique semestres dynamiques ---------
+const SEMESTRES_PAR_NIVEAU = {
+  "Licence 1": ["Semestre 1", "Semestre 2"],
+  "Licence 2": ["Semestre 3", "Semestre 4"],
+  "Licence 3 - RT": ["Semestre 5", "Semestre 6"],
+  "Licence 3 - ASR": ["Semestre 5", "Semestre 6"]
+};
+
+function updateSemestres() {
+  const niveau = niveauSelect.value;
+  const semestreOptions = SEMESTRES_PAR_NIVEAU[niveau] || [];
+  semestreSelect.innerHTML = "";
+  semestreOptions.forEach((sem) => {
+    const opt = document.createElement("option");
+    opt.value = sem;
+    opt.textContent = sem;
+    semestreSelect.appendChild(opt);
+  });
+}
+
+// Initialisation au chargement
+updateSemestres();
+
+// Mise à jour automatique des semestres selon le niveau
+niveauSelect.addEventListener("change", updateSemestres);
+
 // --------- Utils ---------
 function showError(msg){ erreurEl.textContent = msg; erreurEl.style.display = "block"; }
 function clearError(){ erreurEl.textContent = ""; erreurEl.style.display = "none"; }
@@ -130,10 +156,8 @@ function addRow(row){
     </td>
   `;
 
-  // Matière select
   tr.querySelector(".td-matiere").appendChild(createMatiereSelect(row?.matiere));
 
-  // Calcul durée automatiquement
   const heureDebutInput = tr.querySelector(".inp-heureDebut");
   const heureFinInput = tr.querySelector(".inp-heureFin");
   const tdDuree = tr.querySelector(".td-duree");
@@ -143,7 +167,6 @@ function addRow(row){
   heureFinInput.addEventListener("change", updateDuree);
   updateDuree();
 
-  // Actions
   if(row?._id){
     tr.querySelector(".btn-save").addEventListener("click", async ()=>{
       try{
@@ -286,24 +309,22 @@ document.querySelectorAll(".toggle-card").forEach(btn=>{
   });
 });
 
+// Déconnexion
 document.getElementById("logoutBtn").addEventListener("click", async () => {
-      try {
-        const isAdminPage = window.location.pathname.includes("admin");
-        const url = isAdminPage
-          ? "https://esmt-2025.onrender.com/api/admin/logout"
-          : "https://esmt-2025.onrender.com/api/etudiants/logout";
+  try {
+    const isAdminPage = window.location.pathname.includes("admin");
+    const url = isAdminPage
+      ? `${API}/api/admin/logout`
+      : `${API}/api/etudiants/logout`;
 
-        const res = await fetch(url, {
-          method: "POST",
-          credentials: "include"
-        });
+    const res = await fetch(url, { method: "POST", credentials: "include" });
 
-        if (res.ok) {
-          window.location.href = isAdminPage 
-            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
-            : "/login.html";
-        }
-      } catch (err) {
-        console.error("Erreur déconnexion :", err);
-      }
-    });
+    if (res.ok) {
+      window.location.href = isAdminPage 
+        ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
+        : "/login.html";
+    }
+  } catch (err) {
+    console.error("Erreur déconnexion :", err);
+  }
+});

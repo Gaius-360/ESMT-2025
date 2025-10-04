@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const niveauButtons = document.querySelectorAll(".niveau-btn");
   const niveauDisplay = document.getElementById("niveauMatieres");
 
+  const formMatiere = document.getElementById("formMatiere");
+  const matiereIdInput = document.getElementById("matiereId");
+  const matiereNomInput = document.getElementById("matiereNom");
+  const matiereCoefInput = document.getElementById("matiereCoef");
+  const matiereSemestreSelect = document.getElementById("matiereSemestre");
+  const resetFormBtn = document.getElementById("resetFormMatiere");
+
   // Boutons niveaux
   niveauButtons.forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -11,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Afficher le niveau sélectionné
       niveauDisplay.textContent = niveauActuel;
+
+      // Adapter les semestres selon le niveau
+      chargerSemestresSelonNiveau(niveauActuel);
 
       // Charger les matières
       await chargerMatieres(niveauActuel);
@@ -21,13 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Gestion formulaire matière
-  const formMatiere = document.getElementById("formMatiere");
-  const matiereIdInput = document.getElementById("matiereId");
-  const matiereNomInput = document.getElementById("matiereNom");
-  const matiereCoefInput = document.getElementById("matiereCoef");
-  const matiereSemestreSelect = document.getElementById("matiereSemestre");
-  const resetFormBtn = document.getElementById("resetFormMatiere");
-
   formMatiere.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -69,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Matière ajoutée avec succès");
       }
 
-      // Réinitialiser formulaire et recharger matières
       resetForm();
       await chargerMatieres(niveauActuel);
     } catch (err) {
@@ -87,9 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Menu mobile
-    document.querySelector(".menu-toggle").addEventListener("click", () => {
-      document.querySelector(".sidebar").classList.toggle("open");
-    });
+  document.querySelector(".menu-toggle").addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("open");
+  });
 });
 
 // Charger les matières d’un niveau
@@ -125,12 +127,12 @@ async function chargerMatieres(niveau) {
 
     activerActionsMatieres();
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="4">Erreur lors du chargement : ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan='4'>Erreur lors du chargement : ${err.message}</td></tr>`;
   }
 }
 
+// Activer édition et suppression
 function activerActionsMatieres() {
-  // Edition matière
   document.querySelectorAll(".edit-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.getElementById("matiereId").value = btn.dataset.id;
@@ -138,12 +140,10 @@ function activerActionsMatieres() {
       document.getElementById("matiereCoef").value = btn.dataset.coefficient;
       document.getElementById("matiereSemestre").value = btn.dataset.semestre;
 
-      // Scroll vers le formulaire
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
 
-  // Suppression matière
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
@@ -163,24 +163,44 @@ function activerActionsMatieres() {
   });
 }
 
+// Adapter le select semestre selon le niveau
+function chargerSemestresSelonNiveau(niveau) {
+  const matiereSemestreSelect = document.getElementById("matiereSemestre");
+  matiereSemestreSelect.innerHTML = '<option value="">-- Choisir --</option>'; // reset
+
+  let semestres = [];
+
+  if (niveau === "Licence 1") semestres = ["Semestre 1", "Semestre 2"];
+  else if (niveau === "Licence 2") semestres = ["Semestre 3", "Semestre 4"];
+  else if (niveau === "Licence 3 - RT" || niveau === "Licence 3 - ASR") semestres = ["Semestre 5", "Semestre 6"];
+
+  semestres.forEach(s => {
+    const option = document.createElement("option");
+    option.value = s;
+    option.textContent = s;
+    matiereSemestreSelect.appendChild(option);
+  });
+}
+
+// Déconnexion admin
 document.getElementById("logoutBtn").addEventListener("click", async () => {
-      try {
-        const isAdminPage = window.location.pathname.includes("admin");
-        const url = isAdminPage
-          ? "https://esmt-2025.onrender.com/api/admin/logout"
-          : "https://esmt-2025.onrender.com/api/etudiants/logout";
+  try {
+    const isAdminPage = window.location.pathname.includes("admin");
+    const url = isAdminPage
+      ? "https://esmt-2025.onrender.com/api/admin/logout"
+      : "https://esmt-2025.onrender.com/api/etudiants/logout";
 
-        const res = await fetch(url, {
-          method: "POST",
-          credentials: "include"
-        });
-
-        if (res.ok) {
-          window.location.href = isAdminPage 
-            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
-            : "/login.html";
-        }
-      } catch (err) {
-        console.error("Erreur déconnexion :", err);
-      }
+    const res = await fetch(url, {
+      method: "POST",
+      credentials: "include"
     });
+
+    if (res.ok) {
+      window.location.href = isAdminPage
+        ? "/backend/public/admin/admin_connexion/admin_connexion.html"
+        : "/login.html";
+    }
+  } catch (err) {
+    console.error("Erreur déconnexion :", err);
+  }
+});

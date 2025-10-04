@@ -6,6 +6,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let etudiant = null;
 
+  // -------- Utils --------
+  function getSemestresPourNiveau(niveau) {
+    switch (niveau) {
+      case "Licence 1": return ["Semestre 1", "Semestre 2"];
+      case "Licence 2": return ["Semestre 3", "Semestre 4"];
+      case "Licence 3 - RT":
+      case "Licence 3 - ASR": return ["Semestre 5", "Semestre 6"];
+      default: return ["Semestre 1", "Semestre 2"];
+    }
+  }
+
+  function remplirSelectSemestres(niveau) {
+    const semestres = getSemestresPourNiveau(niveau);
+    semestreSelect.innerHTML = "";
+    semestres.forEach((s, i) => {
+      const option = document.createElement("option");
+      option.value = i; // index pour garder simple (0,1)
+      option.textContent = s;
+      semestreSelect.appendChild(option);
+    });
+  }
+
   try {
     // Vérifier si étudiant connecté et récupérer ses infos
     const resCheck = await fetch("https://esmt-2025.onrender.com/api/etudiants/check", {
@@ -23,13 +45,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     etudiantIdInput.value = etudiant._id;
     niveauDisplay.textContent = `Niveau : ${etudiant.level}`;
 
+    // Remplir le select semestre selon le niveau
+    remplirSelectSemestres(etudiant.level);
+
+    // Charger notes initiales pour le premier semestre
+    await chargerNotes(etudiant.level, semestreSelect.selectedIndex, etudiant._id);
+
     // Écoute du changement de semestre
     semestreSelect.addEventListener("change", () => {
-      chargerNotes(etudiant.level, semestreSelect.value, etudiant._id);
+      chargerNotes(etudiant.level, semestreSelect.selectedIndex, etudiant._id);
     });
-
-    // Chargement initial semestre sélectionné
-    await chargerNotes(etudiant.level, semestreSelect.value, etudiant._id);
 
   } catch (err) {
     console.error("Erreur session :", err);
@@ -47,16 +72,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-async function chargerNotes(niveau, semestreNumero, etudiantId) {
+// -------- Charger notes --------
+async function chargerNotes(niveau, semestreIndex, etudiantId) {
   const tableBody = document.getElementById("table-notes");
   tableBody.innerHTML = "<tr><td colspan='5'>Chargement...</td></tr>";
 
-  // Transformer "1" ou "2" en "Semestre 1" / "Semestre 2"
-  const semestreTexte = semestreNumero === "1" ? "Semestre 1" : "Semestre 2";
+  const semestres = {
+    "Licence 1": ["Semestre 1", "Semestre 2"],
+    "Licence 2": ["Semestre 3", "Semestre 4"],
+    "Licence 3 - RT": ["Semestre 5", "Semestre 6"],
+    "Licence 3 - ASR": ["Semestre 5", "Semestre 6"]
+  };
+
+  const semestreTexte = semestres[niveau]?.[semestreIndex] || "Semestre 1";
 
   try {
     // Récupérer matières du niveau + semestre
-    const resMatieres = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${niveau}/semestre/${semestreTexte}`);
+    const resMatieres = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${encodeURIComponent(niveau)}/semestre/${encodeURIComponent(semestreTexte)}`);
     if (!resMatieres.ok) throw new Error("Erreur lors du chargement des matières");
     const matieres = await resMatieres.json();
 
@@ -95,43 +127,40 @@ async function chargerNotes(niveau, semestreNumero, etudiantId) {
   }
 }
 
-// Initialisation des modales
+// -------- Modales footer --------
 function initModales() {
   const modals = document.querySelectorAll(".modal");
-  // S'assurer que toutes les modales sont cachées au chargement
-  modals.forEach(modal => {
-    modal.style.display = "none";
-  });
+  modals.forEach(modal => { modal.style.display = "none"; });
 
-  // Ouvrir modale au clic sur footer-link
   document.querySelectorAll(".footer-link").forEach(link => {
     link.addEventListener("click", (e) => {
-      e.preventDefault(); // éviter un comportement par défaut si <a>
+      e.preventDefault();
       const modalId = "modal-" + link.dataset.modal;
       const modal = document.getElementById(modalId);
       if (modal) modal.style.display = "flex";
     });
   });
 
-  // Fermer modale au clic sur la croix
   document.querySelectorAll(".close").forEach(btn => {
     btn.addEventListener("click", () => {
       btn.closest(".modal").style.display = "none";
     });
   });
 
-  // Fermer modale en cliquant à l'extérieur
   window.addEventListener("click", (e) => {
-    if (e.target.classList.contains("modal")) {
-      e.target.style.display = "none";
-    }
+    if (e.target.classList.contains("modal")) e.target.style.display = "none";
   });
 }
 
-// Déconnexion
- document.getElementById("logoutBtn").addEventListener("click", async () => {
+// -------- Déconnexion --------
+document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/logout", { method: "POST", credentials: "include" });
+    const res = await fetch("https://esmt-2025.onrender.com/api/etudiants/logout", {
+      method: "POST",
+      credentials: "include"
+    });
     if (res.ok) window.location.href = "../connexion/etudiant_connexion.html";
-  } catch (err) { console.error("Erreur déconnexion :", err); }
+  } catch (err) {
+    console.error("Erreur déconnexion :", err);
+  }
 });

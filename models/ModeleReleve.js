@@ -15,7 +15,7 @@ const DomaineSchema = new mongoose.Schema({
 
 const ModeleReleveSchema = new mongoose.Schema({
   niveau: { type: String, required: true },
-  semestre: { type: String, required: true }, 
+  semestre: { type: String, enum: ["Semestre 1", "Semestre 2", "Semestre 3", "Semestre 4", "Semestre 5", "Semestre 6"], required: true },
   titre: { type: String, default: "" },
   domaines: { type: [DomaineSchema], default: [] },
 }, { timestamps: true });

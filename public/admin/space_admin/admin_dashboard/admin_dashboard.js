@@ -22,6 +22,7 @@ const searchSubject = document.getElementById("searchSubject");
 const exportCsvBtn = document.getElementById("exportCsv");
 const recentList = document.getElementById("recentList");
 
+// Sidebar toggle
 const menuToggle = document.querySelector(".menu-toggle");
 const sidebar = document.querySelector(".sidebar");
 menuToggle?.addEventListener("click", ()=> sidebar.classList.toggle("open"));
@@ -31,7 +32,15 @@ let chartEvolution = null;
 let matiereChart = null;
 let chartAbsences = null;
 
-// Small util: safe fetch + parse JSON, returns null on error
+// Semestres par niveau
+const niveauxSemestres = {
+  "Licence 1": ["Semestre 1", "Semestre 2"],
+  "Licence 2": ["Semestre 3", "Semestre 4"],
+  "Licence 3 - RT": ["Semestre 5", "Semestre 6"],
+  "Licence 3 - ASR": ["Semestre 5", "Semestre 6"]
+};
+
+// --- Utils ---
 async function fetchJson(url, opts = {}) {
   try {
     const res = await fetch(url, { credentials: "include", ...opts });
@@ -43,8 +52,15 @@ async function fetchJson(url, opts = {}) {
   }
 }
 
-// Helper: format number
 function fmt(n, digits=2){ if (n==null||isNaN(n)) return "—"; return Number(n).toFixed(digits); }
+function escapeHtml(s){ if(!s) return ""; return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+// --- Mettre à jour le dropdown semestre ---
+function updateSemestreOptions() {
+  const niveau = niveauFilter.value;
+  const semestres = niveauxSemestres[niveau] || [];
+  semestreFilter.innerHTML = semestres.map(s => `<option value="${s}">${s}</option>`).join('');
+}
 
 // --- Main loader ---
 async function loadAll() {
@@ -80,7 +96,6 @@ async function loadAbsences(niveau, semestre, from, to){
     if (!res.ok) { kpiAbsences.textContent = "—"; return; }
     const arr = await res.json();
 
-    // Filtrer par période
     const filtered = arr.filter(a => {
       const absDate = a.date ? new Date(a.date) : null;
       if (from && absDate && absDate < new Date(from)) return false;
@@ -131,7 +146,7 @@ async function loadNotesAndCharts(niveau, semestre, from, to){
       const created = n.createdAt ? new Date(n.createdAt) : null;
       if (from && created && created < new Date(from)) continue;
       if (to) { const dTo = new Date(to); dTo.setHours(23,59,59,999); if (created && created > dTo) continue; }
-      if (semestre && n.semestre && !n.semestre.toLowerCase().includes(semestre.toLowerCase())) continue;
+      if (semestre && n.semestre !== semestre) continue;
 
       const note1 = (n.note1 != null) ? Number(n.note1) : null;
       const note2 = (n.note2 != null) ? Number(n.note2) : null;
@@ -208,7 +223,7 @@ async function loadSubjectsTable(niveau, semestre, from, to){
       const created = n.createdAt ? new Date(n.createdAt) : null;
       if (from && created && created < new Date(from)) continue;
       if (to) { const dTo = new Date(to); dTo.setHours(23,59,59,999); if (created && created > dTo) continue; }
-      if (semestre && n.semestre && !n.semestre.toLowerCase().includes(semestre.toLowerCase())) continue;
+      if (semestre && n.semestre !== semestre) continue;
 
       const nom = n.matiere || "Inconnu";
       const coef = Number(n.coefficient || 1);
@@ -318,24 +333,14 @@ function renderRecentActions(){
   itemsToShow.forEach(item=>{ const li=document.createElement("li"); li.textContent=item.txt; recentList.appendChild(li); });
 }
 
-  // -------- MODALE CHANGEMENT MOT DE PASSE --------
+// --- Modale mot de passe ---
 const modal = document.getElementById("passwordModal");
 const link = document.getElementById("changePasswordLink");
 const closeBtn = document.querySelector(".modal .close");
+link.addEventListener("click", () => { modal.style.display = "block"; });
+closeBtn.addEventListener("click", () => { modal.style.display = "none"; });
+window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
 
-link.addEventListener("click", () => {
-  modal.style.display = "block";
-});
-
-closeBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-window.addEventListener("click", (e) => {
-  if (e.target === modal) modal.style.display = "none";
-});
-
-// -------- FORMULAIRE --------
 document.getElementById("passwordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const oldPassword = document.getElementById("oldPassword").value;
@@ -350,7 +355,7 @@ document.getElementById("passwordForm").addEventListener("submit", async (e) => 
   }
 
   try {
-    const res = await fetch("https://esmt-2025.onrender.com/api/admin/change-password", {
+    const res = await fetch(`${API}/admin/change-password`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -373,40 +378,20 @@ document.getElementById("passwordForm").addEventListener("submit", async (e) => 
   }
 });
 
-// --- Utils ---
-function escapeHtml(s){ if(!s) return ""; return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-
-// --- Events ---
-applyFilters.addEventListener("click", loadAll);
-refreshBtn.addEventListener("click", loadAll);
-searchSubject.addEventListener("keypress", (e)=>{ if(e.key==="Enter") e.preventDefault(); });
+// --- Logout ---
 document.getElementById("logoutBtn")?.addEventListener("click", async ()=>{
-  try{ await fetch(`${API}/admin/logout`, { method:"POST", credentials:"include" }); window.location.href="/frontend/admin/admin_connexion/admin_connexion.html"; }
-  catch(err){ console.error(err); }
+  try{ await fetch(`${API}/auth/logout`,{credentials:"include"}); window.location.href="/login.html"; } catch(e){console.error(e);}
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-      try {
-        const isAdminPage = window.location.pathname.includes("admin");
-        const url = isAdminPage
-          ? "https://esmt-2025.onrender.com/api/admin/logout"
-          : "https://esmt-2025.onrender.com/api/etudiants/logout";
+// --- Event listeners ---
+niveauFilter.addEventListener("change", ()=>{
+  updateSemestreOptions();
+  loadAll();
+});
+semestreFilter.addEventListener("change", loadAll);
+applyFilters.addEventListener("click", loadAll);
+refreshBtn.addEventListener("click", loadAll);
 
-        const res = await fetch(url, {
-          method: "POST",
-          credentials: "include"
-        });
-
-        if (res.ok) {
-          window.location.href = isAdminPage 
-            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
-            : "/login.html";
-        }
-      } catch (err) {
-        console.error("Erreur déconnexion :", err);
-      }
-    });
-
-// Auto-load
-window.addEventListener("DOMContentLoaded", loadAll);
-window.addEventListener("DOMContentLoaded", ()=>loadRecentActions());
+// --- Initialisation ---
+updateSemestreOptions();
+loadAll();

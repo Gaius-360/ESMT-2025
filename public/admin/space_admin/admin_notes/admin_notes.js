@@ -6,6 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const semestreSelect = document.getElementById("semestreSelect");
   const niveauDisplay = document.getElementById("niveauSelectionne");
 
+  // Mapping niveaux → semestres
+  const semestresParNiveau = {
+    "Licence 1": ["Semestre 1", "Semestre 2"],
+    "Licence 2": ["Semestre 3", "Semestre 4"],
+    "Licence 3 - RT": ["Semestre 5", "Semestre 6"],
+    "Licence 3 - ASR": ["Semestre 5", "Semestre 6"],
+  };
+
   // Boutons niveaux
   niveauButtons.forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -14,20 +22,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // Afficher le niveau sélectionné
       niveauDisplay.textContent = `✅ Niveau sélectionné : ${niveauActuel}`;
 
-      
+      // Adapter le select des semestres
+      remplirSemestres(niveauActuel);
 
-      // Charger les matières et étudiants
+      // Charger les étudiants
       await chargerEtudiants(niveauActuel);
 
-      // Réinitialiser sélection étudiant et notes
+      // Réinitialiser sélection étudiant et tableau des notes
       etudiantSelect.value = "";
       document.getElementById("notesBody").innerHTML = "";
     });
   });
-
-  
-
- 
 
   // Changement étudiant ou semestre déclenche affichage des notes
   etudiantSelect.addEventListener("change", () => {
@@ -49,9 +54,46 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("notesBody").innerHTML = "";
     }
   });
-    
+
+  // Menu mobile
+  document.querySelector(".menu-toggle").addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("open");
+  });
+
+  // Déconnexion
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    try {
+      const isAdminPage = window.location.pathname.includes("admin");
+      const url = isAdminPage
+        ? "https://esmt-2025.onrender.com/api/admin/logout"
+        : "https://esmt-2025.onrender.com/api/etudiants/logout";
+
+      const res = await fetch(url, { method: "POST", credentials: "include" });
+      if (res.ok) {
+        window.location.href = isAdminPage
+          ? "/backend/public/admin/admin_connexion/admin_connexion.html"
+          : "/login.html";
+      }
+    } catch (err) {
+      console.error("Erreur déconnexion :", err);
+    }
+  });
+
+  // Fonction pour remplir le select semestre selon le niveau
+  function remplirSemestres(niveau) {
+    semestreSelect.innerHTML = '<option value="">-- Choisir un semestre --</option>';
+    if (niveau && semestresParNiveau[niveau]) {
+      semestresParNiveau[niveau].forEach((s) => {
+        const option = document.createElement("option");
+        option.value = s;
+        option.textContent = s;
+        semestreSelect.appendChild(option);
+      });
+    }
+  }
 });
 
+// ------------------------- Fonctions auxiliaires -------------------------
 
 // Charger les étudiants d’un niveau dans le select
 async function chargerEtudiants(niveau) {
@@ -63,12 +105,8 @@ async function chargerEtudiants(niveau) {
     if (!res.ok) throw new Error("Erreur lors du chargement des étudiants");
     const etudiants = await res.json();
 
-    // ✅ Tri alphabétique par fullname (en tenant compte des accents)
-    etudiants.sort((a, b) => {
-      const nameA = (a.fullname || "").toLowerCase();
-      const nameB = (b.fullname || "").toLowerCase();
-      return nameA.localeCompare(nameB, "fr");
-    });
+    // Tri alphabétique par fullname
+    etudiants.sort((a, b) => (a.fullname || "").localeCompare(b.fullname || "", "fr"));
 
     etudiants.forEach((etudiant) => {
       const option = document.createElement("option");
@@ -87,12 +125,12 @@ async function chargerMatieresPourEtudiant(niveau, semestre, etudiantId) {
   tableBody.innerHTML = "<tr><td colspan='7'>Chargement...</td></tr>";
 
   try {
-    // Récupérer matières du niveau + semestre
+    // Matières du niveau + semestre
     const resMatieres = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${niveau}/semestre/${semestre}`);
     if (!resMatieres.ok) throw new Error("Erreur lors du chargement des matières");
     const matieres = await resMatieres.json();
 
-    // Récupérer notes de l'étudiant
+    // Notes de l'étudiant
     const resNotes = await fetch(`https://esmt-2025.onrender.com/api/notes/${etudiantId}`);
     if (!resNotes.ok) throw new Error("Erreur lors du chargement des notes");
     const notesExistantes = await resNotes.json();
@@ -110,7 +148,6 @@ async function chargerMatieresPourEtudiant(niveau, semestre, etudiantId) {
       );
 
       const row = document.createElement("tr");
-
       row.innerHTML = `
         <td>${matiere.nom}</td>
         <td>${matiere.coefficient}</td>
@@ -121,13 +158,12 @@ async function chargerMatieresPourEtudiant(niveau, semestre, etudiantId) {
           <button class="btn-enregistrer" data-matiere="${matiere.nom}" data-semestre="${matiere.semestre}" data-coefficient="${matiere.coefficient}">💾</button>
         </td>
       `;
-
       tableBody.appendChild(row);
     });
 
     activerEnregistrement(etudiantId);
   } catch (err) {
-    tableBody.innerHTML = `<tr><td colspan="7">Erreur : ${err.message}</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan='7'>Erreur : ${err.message}</td></tr>`;
   }
 }
 
@@ -144,13 +180,10 @@ function activerEnregistrement(etudiantId) {
       const note1 = inputs[0].value.trim() !== "❌" ? parseFloat(inputs[0].value) : null;
       const note2 = inputs[1].value.trim() !== "❌" ? parseFloat(inputs[1].value) : null;
 
-
       try {
         const res = await fetch("https://esmt-2025.onrender.com/api/notes", {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             etudiantId,
             matiere,
@@ -170,51 +203,3 @@ function activerEnregistrement(etudiantId) {
     });
   });
 }
-
-function addMessageBubble(m) {
-  const div = document.createElement("div");
-  div.classList.add("bubble");
-
-  // Si le message est envoyé par l'admin
-  if (m.senderModel === "Admin") {
-    div.classList.add(isAdmin ? "sent" : "received");
-    div.classList.add("admin");
-  } 
-  // Si le message est envoyé par l'étudiant
-  else {
-    div.classList.add(isAdmin ? "received" : "sent");
-    div.classList.add("student");
-  }
-
-  div.textContent = m.content;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-
-// Menu mobile
-document.querySelector(".menu-toggle").addEventListener("click", () => {
-  document.querySelector(".sidebar").classList.toggle("open");
-});
-
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-      try {
-        const isAdminPage = window.location.pathname.includes("admin");
-        const url = isAdminPage
-          ? "https://esmt-2025.onrender.com/api/admin/logout"
-          : "https://esmt-2025.onrender.com/api/etudiants/logout";
-
-        const res = await fetch(url, {
-          method: "POST",
-          credentials: "include"
-        });
-
-        if (res.ok) {
-          window.location.href = isAdminPage 
-            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
-            : "/login.html";
-        }
-      } catch (err) {
-        console.error("Erreur déconnexion :", err);
-      }
-    });

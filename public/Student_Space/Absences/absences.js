@@ -60,7 +60,7 @@ async function loadSemestres() {
     const res = await fetch(`${API}/api/etudiants/me`, { credentials: "include" });
     if (!res.ok) throw new Error("Impossible de récupérer les infos étudiant");
     const etudiant = await res.json();
-    const semestres = getSemestresPourNiveau(etudiant.niveau);
+    const semestres = getSemestresPourNiveau(etudiant.level);
 
     semestreSelect.innerHTML = "";
     semestres.forEach(s => {

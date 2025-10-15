@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants/niveau/${encodeURIComponent(niveau)}`, {
         credentials: "include"
-      });
+      }); 
 
       const etudiants = await res.json();
 

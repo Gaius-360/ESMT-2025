@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prévisualisation du modèle de relevé</title>
+
+  <!-- Reprise du même style que releve.html -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      background-color: #0066cc;
+      color: white;
+      padding: 20px;
+      border-bottom: 4px solid #004c99;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+
+    #container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .domaine-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-top: 25px;
+      padding: 15px;
+      background: #fdfdfd;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .domaine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      background: #f0f4fa;
+      border-radius: 6px;
+      padding: 10px 15px;
+    }
+
+    .domaine-title {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .domaine-avg {
+      color: #555;
+      font-size: 0.9em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #e8efff;
+      color: #003366;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      font-size: 0.85em;
+    }
+
+    .badge.ok {
+      background-color: #28a745;
+    }
+
+    .badge.ko {
+      background-color: #dc3545;
+    }
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    #downloadPDF, #retourAdminBtn {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin: 8px;
+      font-size: 0.95em;
+    }
+
+    #downloadPDF:hover, #retourAdminBtn:hover {
+      background-color: #004c99;
+    }
+
+    #validation {
+      color: #777;
+      margin-top: 15px;
+    }
+  </style>
+
+  <!-- Librairie PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1 id="titreModele">Prévisualisation du modèle</h1>
+      <p><strong>Moyenne du semestre :</strong> <span id="moyenneSemestre">—</span></p>
+    </header>
+
+    <section id="tableaux"></section>
+
+    <footer>
+      <p id="validation">Aucune donnée réelle — prévisualisation d’un modèle</p>
+      <div style="text-align: center; margin-top: 15px;">
+        <button id="downloadPDF"><i class="fa-solid fa-download"></i> Télécharger en PDF</button>
+        <button id="retourAdminBtn"><i class="fa-solid fa-arrow-left"></i> Retour à l’éditeur</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="releve_preview.js"></script>
+</body>
+</html>

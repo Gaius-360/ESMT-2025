@@ -73,13 +73,26 @@ async function loadMatieres(niveau){
 }
 
 // --------- Charger étudiants ---------
-async function loadEtudiants(niveau){
-  await fetch(`${API}/api/etudiants/niveau/${encodeURIComponent(niveau)}`, { credentials: "include" });
-  if(!res.ok) throw new Error("Impossible de charger les étudiants.");
-  const data = await res.json();
-  data.sort((a,b)=>((a.fullname||a.email).toLowerCase()).localeCompare((b.fullname||b.email).toLowerCase(),"fr"));
-  return data;
+async function loadEtudiants(niveau) {
+  try {
+    const res = await fetch(`${API}/api/etudiants/niveau/${encodeURIComponent(niveau)}`, {
+      credentials: "include"
+    });
+    if (!res.ok) throw new Error("Impossible de charger les étudiants.");
+    const data = await res.json();
+    data.sort((a, b) =>
+      ((a.fullname || a.email).toLowerCase()).localeCompare(
+        (b.fullname || b.email).toLowerCase(),
+        "fr"
+      )
+    );
+    return data;
+  } catch (e) {
+    showError(e.message);
+    return [];
+  }
 }
+
 
 function renderEtudiants(list){
   listeEtudiants.innerHTML = "";

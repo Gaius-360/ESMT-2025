@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription DAF</title>
+  <link rel="stylesheet" href="Daf_register.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="auth-container">
+    <form id="registerForm" class="auth-form">
+      <h2><i class="fa-solid fa-user-plus"></i> Inscription DAF</h2>
+
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" required>
+      
+      <button type="submit">S'inscrire</button>
+      
+      <p>Déjà un compte ? <a href="../Daf_connexion/Daf_connexion.html">Connexion</a></p>
+      <p id="errorMsg" class="error"></p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const errorMsg = document.getElementById("errorMsg");
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      // Vérification mot de passe
+      if (password !== confirmPassword) {
+        errorMsg.textContent = "Les mots de passe ne correspondent pas.";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://esmt-2025.onrender.com/api/adminDaf/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Erreur");
+        window.location.href = "../Daf_connexion/Daf_connexion.html";
+      } catch (err) {
+        errorMsg.textContent = err.message;
+      }
+    });
+  </script>
+</body>
+</html>

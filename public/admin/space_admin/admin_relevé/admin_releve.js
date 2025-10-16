@@ -1,5 +1,5 @@
-const API_BASE = "http://localhost:5000/api/releve";
-const API_ADMIN = "http://localhost:5000/api/admin";
+const API_BASE = "https://esmt-2025.onrender.com/api/releve";
+const API_ADMIN = "https://esmt-2025.onrender.com/api/admin";
 
 const niveauSelect = document.getElementById("niveauSelect");
 const semestreSelect = document.getElementById("semestreSelect");
@@ -400,7 +400,7 @@ annulerEditionBtn.addEventListener("click", () => showEditor(false));
 // ---------- Chargement matières ----------
 async function loadMatieresList(niveau, semestre) {
   try {
-    const res = await fetch(`http://localhost:5000/api/matieres/niveau/${encodeURIComponent(niveau)}/semestre/${encodeURIComponent(semestre)}`, { credentials: "include" });
+    const res = await fetch(`https://esmt-2025.onrender.com/api/matieres/niveau/${encodeURIComponent(niveau)}/semestre/${encodeURIComponent(semestre)}`, { credentials: "include" });
     if (!res.ok) throw new Error("Erreur récupération matières");
     matieresListe = await res.json();
     refreshDatalist();

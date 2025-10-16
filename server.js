@@ -27,6 +27,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 
+// 🔒 Middleware de blocage global (développeur)
+const checkPlatformLock = require("./middlewares/checkPlatformLock");
+app.use(checkPlatformLock);
+
 // Fichiers statiques
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -56,6 +60,10 @@ app.use("/api/emplois", require("./routes/emplois"));
 app.use("/api/messages", require("./routes/messages"));
 app.use("/api/notifications", require("./routes/notifications"));
 app.use("/api/notifOnlyStudent", require("./routes/notifOnlyStudent"));
+app.use("/api/paiements", require("./routes/paiements"));
+app.use("/api/adminDaf", require("./routes/adminDaf"));
+
+
 
 // --- Socket.IO listeners ---
 io.on("connection", (socket) => {

@@ -6,6 +6,7 @@ const router = express.Router();
 const requireEtudiant = require("../middlewares/requireEtudiant");
 const Absence = require("../models/Absence");
 const requireAdmin = require("../middlewares/requireAdmin");
+const requireDaf = require("../middlewares/requireDaf");
 
 // ✅ Inscription étudiant
 router.post("/register", async (req, res) => {
@@ -170,12 +171,15 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:niveau", async (req, res) => {
+// Récupérer les étudiants d’un niveau
+router.get("/niveau/:niveau", async (req, res) => {
   try {
-    const etudiants = await User.find({ level: req.params.niveau });
-    res.status(200).json(etudiants);
+    const niveau = decodeURIComponent(req.params.niveau);
+    const etudiants = await User.find({ level: niveau });
+    res.json(etudiants);
   } catch (err) {
-    res.status(500).json({ message: "Erreur lors de la récupération des étudiants." });
+    console.error(err);
+    res.status(500).json({ message: "Erreur serveur." });
   }
 });
 
@@ -184,5 +188,45 @@ router.post("/logout", (req, res) => {
   res.clearCookie("etudiantId");
   res.json({ message: "Déconnexion réussie." });
 });
+
+router.get("/", requireDaf, async (req, res) => {
+  try {
+    const { niveau } = req.query;
+    const query = { role: "etudiant" };
+    if (niveau) query.niveau = niveau;
+    const etudiants = await User.find(query).select("_id fullname email niveau").lean();
+    res.json(etudiants);
+  } catch (err) {
+    console.error("GET /etudiants :", err);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+});
+
+
+// GET /api/etudiants/recherche?q=nom
+router.get("/recherche", requireDaf, async (req, res) => {
+  try {
+    const q = (req.query.q || "").trim();
+
+    const query = {
+      role: "etudiant",
+      $or: [
+        { fullname: { $regex: q, $options: "i" } },
+        { email: { $regex: q, $options: "i" } }
+      ]
+    };
+
+    const etudiants = await User.find(query)
+      .select("_id fullname email niveau")
+      .sort({ fullname: 1 })
+      .lean();
+
+    res.json(etudiants);
+  } catch (err) {
+    console.error("GET /etudiants/recherche :", err);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+});
+
 
 module.exports = router;

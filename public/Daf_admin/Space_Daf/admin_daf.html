@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DAF - Gestion Paiements</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="admin_daf.css">
+</head>
+<body>
+
+<h1><i class="fa-solid fa-coins"></i> DAF — Gestion des paiements</h1>
+
+<div class="controls">
+  <label>Niveau:
+    <select id="niveauSelect">
+      <option value="">-- choisir niveau --</option>
+      <option value="Licence 1">Licence 1</option>
+      <option value="Licence 2">Licence 2</option>
+      <option value="Licence 3 - RT">Licence 3 - RT</option>
+      <option value="Licence 3 - ASR">Licence 3 - ASR</option>
+    </select>
+  </label>
+
+  <label>Étudiant:
+    <select id="etudiantSelect"><option value="">-- tous --</option></select>
+  </label>
+
+  <button id="createPaiement">Créer situation (étudiant sélectionné)</button>
+  <button id="btnCreateAllPaiements" class="secondary">Créer situations pour tout le niveau</button>
+
+  <label>Recherche:
+    <input id="searchInput" placeholder="Nom ou email..." />
+  </label>
+</div>
+
+<div id="bilan">Chargement du bilan...</div>
+
+<table id="tablePaiements">
+  <thead>
+    <tr>
+      <th>Étudiants</th>
+      <th>1er</th>
+      <th>2e</th>
+      <th>3e</th>
+      <th>4e</th>
+      <th>Date 1er</th>
+      <th>Date 2e</th>
+      <th>Date 3e</th>
+      <th>Date 4e</th>
+      <th>Total payé</th>
+      <th>Reste</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script src="admin_daf.js"></script>
+
+</body>
+</html>

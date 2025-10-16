@@ -8,11 +8,7 @@ router.post("/register", async (req, res) => {
   const { email, password, fullname } = req.body;
 
   try {
-    // Vérifier s'il existe déjà un administrateur
-    const countAdmins = await Admin.countDocuments();
-    if (countAdmins > 0) {
-      return res.status(403).json({ message: "Un administrateur existe déjà. Impossible d'en créer un autre." });
-    }
+    
 
     // Vérifier si l'email est déjà utilisé (sécurité supplémentaire)
     const existing = await Admin.findOne({ email });

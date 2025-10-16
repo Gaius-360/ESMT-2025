@@ -101,7 +101,7 @@ async function chargerEtudiants(niveau) {
   etudiantSelect.innerHTML = '<option value="">-- Choisir un étudiant --</option>';
 
   try {
-    const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants/${niveau}`);
+    const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants/niveau/${encodeURIComponent(niveau)}`);
     if (!res.ok) throw new Error("Erreur lors du chargement des étudiants");
     const etudiants = await res.json();
 

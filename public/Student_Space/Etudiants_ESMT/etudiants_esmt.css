@@ -243,6 +243,34 @@ main h1 {
   color: var(--primary);
 }
 
+tr.homme {
+  background-color: rgba(0, 120, 255, 0.08);
+}
+
+tr.femme {
+  background-color: rgba(255, 100, 180, 0.1);
+}
+
+tr.homme:hover, tr.femme:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.counters {
+  font-weight: bold;
+  color: #333;
+  margin-left: 10px;
+}
+
+#hommeCount{
+  color: #38bdf8;
+}
+
+#femmeCount{
+  color: rgb(232, 154, 167);
+}
+
+
 
 /* Sidebar responsive */
 @media (max-width: 768px) {

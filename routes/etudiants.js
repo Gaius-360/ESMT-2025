@@ -26,25 +26,51 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// ✅ Connexion étudiant
+// ✅ Connexion étudiant (version sécurisée)
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // 🧹 Supprime tout ancien cookie
+    res.clearCookie("etudiantId");
+
+    // 🔍 Vérifie si l'utilisateur existe et est bien un étudiant actif
     const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
+
+    if (!user) {
       return res.status(401).json({ message: "Email ou mot de passe invalide." });
     }
 
+    // Si tu veux renforcer : ne permettre que les utilisateurs ayant un rôle précis
+    if (user.role && user.role.toLowerCase() !== "etudiant") {
+      return res.status(403).json({ message: "Accès réservé aux étudiants." });
+    }
+
+    // 🔑 Vérifie le mot de passe
+    const isValidPassword = await user.comparePassword(password);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Email ou mot de passe invalide." });
+    }
+
+    // ✅ Crée un nouveau cookie sécurisé
     res.cookie("etudiantId", user._id.toString(), {
       httpOnly: true,
-      maxAge: 2 * 60 * 60 * 1000,
       sameSite: "Lax",
-      secure: false // à mettre true en HTTPS
+      secure: false, // ✅ passe à true en HTTPS
+      maxAge: 2 * 60 * 60 * 1000, // 2h
     });
 
-    res.status(200).json({ message: "Connexion réussie." });
+    res.status(200).json({
+      message: "Connexion réussie.",
+      user: {
+        id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        level: user.level,
+      },
+    });
   } catch (err) {
+    console.error("Erreur login étudiant :", err);
     res.status(500).json({ message: "Erreur serveur." });
   }
 });
@@ -64,20 +90,33 @@ router.delete("/:id", requireAdmin, async (req, res) => {
 });
 
 
-// ✅ Vérification session étudiant
+// ✅ Vérification session étudiant (sécurisée)
 router.get("/check", async (req, res) => {
   const { etudiantId } = req.cookies;
-  if (!etudiantId) return res.json({ connected: false });
+
+  // Aucun cookie → non connecté
+  if (!etudiantId) {
+    return res.json({ connected: false });
+  }
 
   try {
+    // Vérifie si l'étudiant existe dans la base
     const user = await User.findById(etudiantId).select("-password");
-    if (!user) return res.json({ connected: false });
 
+    if (!user) {
+      // 🧹 Supprime le cookie invalide s'il n'existe plus
+      res.clearCookie("etudiantId");
+      return res.json({ connected: false });
+    }
+
+    // ✅ Étudiant valide
     res.json({ connected: true, user });
   } catch (err) {
-    res.status(500).json({ message: "Erreur serveur." });
+    console.error("Erreur /check :", err);
+    res.status(500).json({ connected: false, message: "Erreur serveur." });
   }
 });
+
 
 // ⚠️ /me AVANT /:niveau
 router.get("/me", requireEtudiant, async (req, res) => {
@@ -163,13 +202,19 @@ router.get("/search", requireAdmin, async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const etudiants = await User.find().select("fullname phone level").sort({ fullname: 1 });
+    // Si tu veux limiter aux "Etudiant" :
+    const query = {}; // ou { role: "Etudiant" } si tu stockes le rôle
+    const etudiants = await User.find(query)
+      .select("fullname phone level gender") // <-- ajouter gender ici
+      .sort({ fullname: 1 })
+      .lean();
     res.json(etudiants);
   } catch (err) {
     console.error("Erreur récupération étudiants :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
+
 
 // Récupérer les étudiants d’un niveau
 router.get("/niveau/:niveau", async (req, res) => {

@@ -68,7 +68,7 @@ async function loadEtudiants(niveau) {
     return;
   }
   try {
-    const res = await fetch(`https://esmt-2025.onrender.com/api/etudiants?niveau=${encodeURIComponent(niveau)}`, { credentials: "include" });
+    const res = await fetch(`http://localhost:5000/api/etudiants?niveau=${encodeURIComponent(niveau)}`, { credentials: "include" });
     allEtudiants = await res.json();
     etudiantSelect.innerHTML = `<option value="">-- tous --</option>` +
       allEtudiants.map(e => `<option value="${e._id}">${e.fullname}</option>`).join("");
@@ -82,7 +82,7 @@ async function loadEtudiants(niveau) {
 // Charger paiements
 async function loadPaiements() {
   try {
-    const res = await fetch("https://esmt-2025.onrender.com/api/paiements/all", { credentials: "include" });
+    const res = await fetch("http://localhost:5000/api/paiements/all", { credentials: "include" });
     allPaiements = await res.json();
     await loadStats();
     displayTable();
@@ -94,7 +94,7 @@ async function loadPaiements() {
 // Statistiques
 async function loadStats() {
   try {
-    const res = await fetch("https://esmt-2025.onrender.com/api/paiements/stats", { credentials: "include" });
+    const res = await fetch("http://localhost:5000/api/paiements/stats", { credentials: "include" });
     const stats = await res.json();
     const s = stats[currentNiveau] || { total:0, totalPaye:0, partiel:0, nonPaye:0, montantTotal:0, montantRestant:0 };
     bilanDiv.innerHTML = `
@@ -217,7 +217,7 @@ async function savePaiement(etudiantId) {
   });
 
   try {
-    const res = await fetch(`https://esmt-2025.onrender.com/api/paiements/update/${etudiantId}`, {
+    const res = await fetch(`http://localhost:5000/api/paiements/update/${etudiantId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ versements }),

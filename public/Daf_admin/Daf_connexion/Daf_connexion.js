@@ -4,7 +4,7 @@ document.getElementById("loginForm").addEventListener("submit", async e => {
   const password = document.getElementById("password").value;
 
   try {
-    const res = await fetch("https://esmt-2025.onrender.com/api/adminDaf/login", {
+    const res = await fetch("http://localhost:5000/api/adminDaf/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

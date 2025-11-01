@@ -99,6 +99,16 @@ router.post("/", requireAdmin, async (req, res) => {
       message: `Nouvelle absence enregistrée le ${new Date(dateAbsence).toLocaleDateString()}`
     });
 
+
+    // 🚀 Envoi notification push
+    const sendPush = req.app.get('sendPushToEtudiant');
+    await sendPush(
+      etudiantId,
+      '🚨 Nouvelle absence',
+      'Une absence a été ajoutée à votre dossier.',
+      'https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html'
+    );
+    
     res.status(201).json(item);
   } catch (err) {
     console.error(err);

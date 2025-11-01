@@ -69,6 +69,16 @@ router.post("/admin/send", requireAdmin, upload.single("file"), async (req, res)
       createdAt: new Date()
     });
 
+
+    // 🚀 Envoi notification push
+const sendPush = req.app.get('sendPushToEtudiant');
+await sendPush(
+  receiverId,
+  '📩 Nouveau message',
+  'Vous avez reçu un message.',
+  'https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html'
+);
+
     res.status(201).json(message);
   } catch (err) {
     console.error(err);

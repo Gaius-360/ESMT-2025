@@ -67,6 +67,16 @@ for (const etu of etudiants) {
 }
 
 
+ // 🚀 Envoi notification push
+  const sendPush = req.app.get('sendPushToEtudiant');
+  await sendPush(
+    etu._id,
+    '🗓️ Emploi du temps mis à jour',
+    'Votre emploi du temps a été modifié.',
+    'https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html'
+  );
+
+
     return res.json({
       message: "PDF importé avec succès ✅",
       emploi: {

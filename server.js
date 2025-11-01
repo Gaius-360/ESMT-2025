@@ -86,6 +86,42 @@ app.get("/", (req, res) => {
   res.status(404).send("Accès direct non autorisé. Utilisez /login.html ou /login_admin.html");
 });
 
+
+
+const webpush = require('web-push');
+const PushSubscription = require('./models/PushSubscription');
+
+
+webpush.setVapidDetails(
+`mailto:${process.env.MAIL_FROM || 'admin@esmt-2025.com'}`,
+process.env.VAPID_PUBLIC_KEY,
+process.env.VAPID_PRIVATE_KEY
+);
+
+
+// ajout route push
+app.use('/api/push', require('./routes/push'));
+
+
+// fonction utilitaire globale
+app.set('sendPushToEtudiant', async (etudiantId, title, message, url) => {
+try {
+const subs = await PushSubscription.find({ etudiant: etudiantId });
+if (!subs || subs.length === 0) return;
+
+
+const payload = JSON.stringify({ title, message, url });
+for (const s of subs) {
+webpush.sendNotification(s.subscription, payload).catch(err => {
+console.error('Erreur envoi push:', err);
+// Optionnel: si err.statusCode === 410 -> supprimer l'abonnement
+});
+}
+} catch (err) {
+console.error('sendPushToEtudiant error', err);
+}
+});
+
 // --- Démarrage du serveur ---
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`🚀 Serveur démarré sur le port ${PORT}`));

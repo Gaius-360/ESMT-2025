@@ -79,6 +79,15 @@ router.patch("/", async (req, res) => {
       lien: "../Notes/notes.html"
     });
 
+    // 📱 Notification push (même hors du site)
+    const sendPush = req.app.get("sendPushToEtudiant");
+    await sendPush(
+      etudiantId,
+      "📊 Nouvelle note disponible",
+      `Une nouvelle note a été ajoutée en ${matiere}.`,
+      "https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html"
+    );
+
     res.status(200).json({ message: "Note enregistrée avec succès." });
 
   } catch (err) {

@@ -152,7 +152,7 @@ const permission = await Notification.requestPermission();
 if (permission !== 'granted') return;
 
 
-const vapidPublicKey = 'TA_CLE_PUBLIQUE_VAPID'; // remplacer par la clé publique réelle
+const vapidPublicKey = 'BFAgfeacAeGdQxHsp5PVTTMXunTRoE9PwU6thjb1p2ZDit-1HUY_eJpU-xZii8VH8O5kiua7hEs5xPq0Civqnw8'; // remplacer par la clé publique réelle
 const subscription = await registration.pushManager.subscribe({
 userVisibleOnly: true,
 applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)

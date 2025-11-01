@@ -175,3 +175,51 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     console.error("Erreur déconnexion :", err);
   }
 });
+
+
+async function registerPush() {
+if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+console.log('Push non supporté');
+return;
+}
+
+
+try {
+const registration = await navigator.serviceWorker.register('/sw.js');
+const permission = await Notification.requestPermission();
+if (permission !== 'granted') return;
+
+
+const vapidPublicKey = 'BFAgfeacAeGdQxHsp5PVTTMXunTRoE9PwU6thjb1p2ZDit-1HUY_eJpU-xZii8VH8O5kiua7hEs5xPq0Civqnw8'; // remplacer par la clé publique réelle
+const subscription = await registration.pushManager.subscribe({
+userVisibleOnly: true,
+applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+});
+
+
+// envoyer au backend
+await fetch('https://esmt-2025.onrender.com/api/push/subscribe', {
+method: 'POST',
+credentials: 'include',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(subscription)
+});
+
+
+console.log('Abonnement push OK');
+} catch (err) {
+console.error('Erreur registerPush', err);
+}
+}
+
+
+function urlBase64ToUint8Array(base64String) {
+const padding = '='.repeat((4 - base64String.length % 4) % 4);
+const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+const rawData = atob(base64);
+return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+}
+
+
+// Auto-register
+registerPush();

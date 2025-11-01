@@ -335,10 +335,23 @@
       background-color: #4cc3d9;
       transform: translateY(-1px);
     }
-.notification-btn:hover {
-  color: #007bff;
-  transition: 0.3s;
-}
+
+    .notification-btn:hover {
+      color: #007bff;
+      transition: 0.3s;
+    }
+
+    #changePush {
+      padding: 10px 15px;
+      border-radius: 50%;
+      border: none;
+      background: #007bff;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
     /* ===== Responsivité ===== */
     @media (max-width: 768px) {
       .mobile-menu-btn {

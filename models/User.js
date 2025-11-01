@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["Licence 1", "Licence 2", "Licence 3 - RT", "Licence 3 - ASR"],
   },
+  pushSubscription: {
+    type: Object,
+    default: null
+  },
   role: {
     type: String,
     enum: ["Etudiant"],

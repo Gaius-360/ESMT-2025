@@ -177,49 +177,77 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 });
 
 
-async function registerPush() {
-if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-console.log('Push non supporté');
-return;
-}
 
 
-try {
-const registration = await navigator.serviceWorker.register('/sw.js');
-const permission = await Notification.requestPermission();
-if (permission !== 'granted') return;
+document.addEventListener("DOMContentLoaded", () => {
+  const pushModal = document.getElementById("pushModal");
+  const acceptBtn = document.getElementById("acceptPush");
+  const declineBtn = document.getElementById("declinePush");
+  const changeBtn = document.getElementById("changePush");
 
+  // Vérifier si l'utilisateur a déjà fait un choix
+  const pushChoice = localStorage.getItem("pushChoice"); // "granted" ou "denied"
 
-const vapidPublicKey = 'BFAgfeacAeGdQxHsp5PVTTMXunTRoE9PwU6thjb1p2ZDit-1HUY_eJpU-xZii8VH8O5kiua7hEs5xPq0Civqnw8'; // remplacer par la clé publique réelle
-const subscription = await registration.pushManager.subscribe({
-userVisibleOnly: true,
-applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+  if (!pushChoice) {
+    // Afficher modal au premier accès
+    pushModal.style.display = "flex";
+  }
+
+  changeBtn.addEventListener("click", () => {
+    pushModal.style.display = "flex";
+  });
+
+  acceptBtn.addEventListener("click", async () => {
+    pushModal.style.display = "none";
+    localStorage.setItem("pushChoice", "granted");
+    await registerPushInteractive();
+  });
+
+  declineBtn.addEventListener("click", () => {
+    pushModal.style.display = "none";
+    localStorage.setItem("pushChoice", "denied");
+  });
 });
 
+// Fonction push interactive
+async function registerPushInteractive() {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    console.log("Push non supporté");
+    return;
+  }
 
-// envoyer au backend
-await fetch('https://esmt-2025.onrender.com/api/push/subscribe', {
-method: 'POST',
-credentials: 'include',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(subscription)
-});
+  try {
+    const registration = await navigator.serviceWorker.register("/sw.js");
 
+    let permission = Notification.permission;
+    if (permission !== "granted") {
+      permission = await Notification.requestPermission();
+      if (permission !== "granted") return;
+    }
 
-console.log('Abonnement push OK');
-} catch (err) {
-console.error('Erreur registerPush', err);
+    const vapidPublicKey = "BFAgfeacAeGdQxHsp5PVTTMXunTRoE9PwU6thjb1p2ZDit-1HUY_eJpU-xZii8VH8O5kiua7hEs5xPq0Civqnw8";
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+    });
+
+    await fetch("https://esmt-2025.onrender.com/api/push/subscribe", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(subscription),
+    });
+
+    console.log("Abonnement push OK");
+  } catch (err) {
+    console.error("Erreur registerPushInteractive", err);
+  }
 }
-}
 
-
+// Utilitaire VAPID
 function urlBase64ToUint8Array(base64String) {
-const padding = '='.repeat((4 - base64String.length % 4) % 4);
-const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-const rawData = atob(base64);
-return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
-
-
-// Auto-register
-registerPush();

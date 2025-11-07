@@ -1,25 +1,7 @@
 const API = "https://esmt-2025.onrender.com";
 
 
-// Vérification de session admin
-(async function checkAdminSession() {
-  try {
-    const res = await fetch(`${API}/api/admin/check`, {
-      credentials: "include"
-    });
-    const data = await res.json();
 
-    if (!data.connected) {
-      // Rediriger si non connecté
-      window.location.href = "../../admin_connexion/admin_connexion.html";
-    } else {
-      console.log("✅ Admin connecté :", data.admin?.fullname || data.admin?.email);
-    }
-  } catch (err) {
-    console.error("Erreur vérification session :", err);
-    window.location.href = "../../admin_connexion/admin_connexion.html";
-  }
-})();
 
 
 const el = (id) => document.getElementById(id);

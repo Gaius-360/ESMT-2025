@@ -5,11 +5,13 @@ const path = require("path");
 const fs = require("fs");
 const Message = require("../models/Message");
 const User = require("../models/User");
-const requireAdmin = require("../middlewares/requireAdmin");
-const requireEtudiant = require("../middlewares/requireEtudiant");
 const Notification = require("../models/Notification");
 
 const router = express.Router();
+
+// assume requireAdmin and requireEtudiant middlewares exist and set req.adminId / req.etudiantId
+const requireAdmin = require("../middlewares/requireAdmin");
+const requireEtudiant = require("../middlewares/requireEtudiant");
 
 // ----- Multer -----
 const storage = multer.diskStorage({
@@ -43,6 +45,7 @@ router.post("/admin/send", requireAdmin, upload.single("file"), async (req, res)
       content: content || "",
       type: filePath ? "file" : "text",
       file: filePath,
+      createdAt: new Date(),
     });
 
     message = await Message.findById(message._id)
@@ -51,7 +54,7 @@ router.post("/admin/send", requireAdmin, upload.single("file"), async (req, res)
       .lean();
 
     const io = req.app.get("io");
-    io.to(receiverId.toString()).emit("newMessage", message);
+    if (io) io.to(receiverId.toString()).emit("newMessage", message);
 
     // Créer notification
     await Notification.create({
@@ -63,21 +66,27 @@ router.post("/admin/send", requireAdmin, upload.single("file"), async (req, res)
     });
 
     // Émettre notification en temps réel
-    io.to(receiverId.toString()).emit("newNotification", {
+    if (io) io.to(receiverId.toString()).emit("newNotification", {
       senderId: req.adminId,
       message: content || (filePath ? "Fichier envoyé" : ""),
       createdAt: new Date()
     });
 
-
-    // 🚀 Envoi notification push
-const sendPush = req.app.get('sendPushToEtudiant');
-await sendPush(
-  receiverId,
-  '📩 Nouveau message',
-  'Vous avez reçu un message.',
-  'https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html'
-);
+    // Envoi notification push (si hook présent)
+    try {
+      const sendPush = req.app.get('sendPushToEtudiant');
+      if (typeof sendPush === "function") {
+        // fire-and-forget but await to catch errors (optional)
+        await sendPush(
+          receiverId,
+          '📩 Nouveau message',
+          content ? content.slice(0, 100) : 'Vous avez reçu un message.',
+          'https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html'
+        );
+      }
+    } catch (pushErr) {
+      console.error("Erreur sendPush (non bloquante) :", pushErr);
+    }
 
     res.status(201).json(message);
   } catch (err) {
@@ -86,7 +95,7 @@ await sendPush(
   }
 });
 
-// Envoi à tous les étudiants d’un niveau
+// Envoi à tous les étudiants d’un niveau (optimisé)
 router.post("/admin/send/level", requireAdmin, upload.single("file"), async (req, res) => {
   try {
     const { level, content } = req.body;
@@ -97,42 +106,69 @@ router.post("/admin/send/level", requireAdmin, upload.single("file"), async (req
 
     const filePath = req.file ? `/uploads/messages/${req.file.filename}` : null;
     const io = req.app.get("io");
-    const messages = [];
 
-    for (let student of students) {
-      let message = await Message.create({
-        sender: req.adminId,
-        senderModel: "Admin",
-        receiver: student._id,
-        receiverModel: "User",
-        content: content || "",
-        type: filePath ? "file" : "text",
-        file: filePath,
-      });
+    // Create messages in parallel (but keep DB inserts as array of promises)
+    const createPromises = students.map(student => Message.create({
+      sender: req.adminId,
+      senderModel: "Admin",
+      receiver: student._id,
+      receiverModel: "User",
+      content: content || "",
+      type: filePath ? "file" : "text",
+      file: filePath,
+      level,
+      createdAt: new Date(),
+    }));
 
-      message = await Message.findById(message._id)
+    const createdMessages = await Promise.all(createPromises);
+
+    // populate them (parallel)
+    const populatedPromises = createdMessages.map(m =>
+      Message.findById(m._id)
         .populate("sender", "fullname email")
         .populate("receiver", "fullname email")
-        .lean();
+        .lean()
+    );
+    const messages = await Promise.all(populatedPromises);
 
-      messages.push(message);
-
-      // Notification pour chaque étudiant
-      await Notification.create({
+    // Notifications + socket emits (in parallel)
+    const notifPromises = students.map(student => {
+      return Notification.create({
         user: student._id,
         sender: req.adminId,
         senderModel: "Admin",
         message: content || (filePath ? "Fichier envoyé" : ""),
         type: "message"
+      }).then(() => {
+        if (io) {
+          const studentMsg = messages.find(mm => mm.receiver?._id?.toString() === student._id.toString());
+          if (studentMsg) io.to(student._id.toString()).emit("newMessage", studentMsg);
+          io.to(student._id.toString()).emit("newNotification", {
+            senderId: req.adminId,
+            message: content || (filePath ? "Fichier envoyé" : ""),
+            createdAt: new Date()
+          });
+        }
       });
+    });
 
-      // Émettre notification
-      io.to(student._id.toString()).emit("newMessage", message);
-      io.to(student._id.toString()).emit("newNotification", {
-        senderId: req.adminId,
-        message: content || (filePath ? "Fichier envoyé" : ""),
-        createdAt: new Date()
-      });
+    await Promise.all(notifPromises);
+
+    // Push (non-blocking): try to send once to the level (if you have such logic)
+    try {
+      const sendPush = req.app.get('sendPushToEtudiant');
+      if (typeof sendPush === "function") {
+        // if you want to send one push to all or to each student, adapt here.
+        // we'll attempt one overall push (non-fatal)
+        await sendPush(
+          null, // if your function expects a user id, adapt accordingly
+          '📢 Message pour votre niveau',
+          (content || 'Un message important pour votre niveau').slice(0, 120),
+          'https://esmt-2025.onrender.com/Student_Space/connexion/etudiant_connexion.html'
+        );
+      }
+    } catch (pushErr) {
+      console.error("Erreur sendPush niveau (non bloquante):", pushErr);
     }
 
     res.status(201).json({ success: true, count: messages.length });
@@ -142,7 +178,7 @@ router.post("/admin/send/level", requireAdmin, upload.single("file"), async (req
   }
 });
 
-// Récup messages avec un étudiant
+// Récup messages entre admin et un étudiant
 router.get("/admin/thread/:studentId", requireAdmin, async (req, res) => {
   try {
     const { studentId } = req.params;
@@ -168,6 +204,29 @@ router.get("/admin/thread/:studentId", requireAdmin, async (req, res) => {
   }
 });
 
+// Récupérer messages envoyés par admin au niveau (utile côté front)
+router.get("/admin/thread/level/:level", requireAdmin, async (req, res) => {
+  try {
+    const { level } = req.params;
+    const adminId = req.adminId;
+
+    const messages = await Message.find({
+      sender: adminId,
+      receiverModel: "User",
+      level,
+    })
+      .sort({ createdAt: 1 })
+      .populate("sender", "fullname email")
+      .populate("receiver", "fullname email")
+      .lean();
+
+    res.json(messages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur récupération messages niveau" });
+  }
+});
+
 // ------------------------
 // Étudiant -> Admin
 // ------------------------
@@ -189,6 +248,7 @@ router.post("/student/send", requireEtudiant, upload.single("file"), async (req,
       content: content || "",
       type: filePath ? "file" : "text",
       file: filePath,
+      createdAt: new Date(),
     });
 
     message = await Message.findById(message._id)
@@ -197,7 +257,7 @@ router.post("/student/send", requireEtudiant, upload.single("file"), async (req,
       .lean();
 
     const io = req.app.get("io");
-    io.to(receiverId.toString()).emit("newMessage", message);
+    if (io) io.to(receiverId.toString()).emit("newMessage", message);
 
     // Notification
     await Notification.create({
@@ -207,7 +267,7 @@ router.post("/student/send", requireEtudiant, upload.single("file"), async (req,
       type: "message"
     });
 
-    io.to(receiverId.toString()).emit("newNotification", {
+    if (io) io.to(receiverId.toString()).emit("newNotification", {
       senderId: senderId,
       message: content || (filePath ? "Fichier envoyé" : ""),
       createdAt: new Date()

@@ -460,7 +460,7 @@ body {
   .logo{margin-top: 30px;margin-left: 35%;}
   .footer{margin-top: 100%;}
 
-  .footer-links { flex-direction: column; gap:8px; }
+  .footer-links { flex-direction: column; gap:10px; }
 }
 
 

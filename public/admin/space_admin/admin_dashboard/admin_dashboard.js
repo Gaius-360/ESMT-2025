@@ -87,6 +87,27 @@ async function loadKpiStudents(niveau){
   else kpiStudents.textContent = "—";
 }
 
+
+// Vérification de session admin
+(async function checkAdminSession() {
+  try {
+    const res = await fetch(`${API}/api/admin/check`, {
+      credentials: "include"
+    });
+    const data = await res.json();
+
+    if (!data.connected) {
+      // Rediriger si non connecté
+      window.location.href = "../../admin_connexion/admin_connexion.html";
+    } else {
+      console.log("✅ Admin connecté :", data.admin?.fullname || data.admin?.email);
+    }
+  } catch (err) {
+    console.error("Erreur vérification session :", err);
+    window.location.href = "../../admin_connexion/admin_connexion.html";
+  }
+})();
+
 // --- Absences ---
 async function loadAbsences(niveau, semestre, from, to){
   kpiAbsences.textContent = "…";
@@ -380,7 +401,7 @@ document.getElementById("passwordForm").addEventListener("submit", async (e) => 
 
 // --- Logout ---
 document.getElementById("logoutBtn")?.addEventListener("click", async ()=>{
-  try{ await fetch(`${API}/auth/logout`,{credentials:"include"}); window.location.href="/login.html"; } catch(e){console.error(e);}
+  try{ await fetch(`${API}/auth/logout`,{credentials:"include"}); window.location.href="../../admin_connexion/admin_connexion.html"; } catch(e){console.error(e);}
 });
 
 // --- Event listeners ---

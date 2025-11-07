@@ -2,6 +2,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const niveauSelect = document.getElementById("niveau-select");
   const tableauBody = document.getElementById("etudiants-table-body");
 
+
+  // Vérification de session admin
+(async function checkAdminSession() {
+  try {
+    const res = await fetch(`${API}/api/admin/check`, {
+      credentials: "include"
+    });
+    const data = await res.json();
+
+    if (!data.connected) {
+      // Rediriger si non connecté
+      window.location.href = "../../admin_connexion/admin_connexion.html";
+    } else {
+      console.log("✅ Admin connecté :", data.admin?.fullname || data.admin?.email);
+    }
+  } catch (err) {
+    console.error("Erreur vérification session :", err);
+    window.location.href = "../../admin_connexion/admin_connexion.html";
+  }
+})();
+
   // Charger les étudiants pour le niveau sélectionné
   async function chargerEtudiants() {
     const niveau = niveauSelect.value;

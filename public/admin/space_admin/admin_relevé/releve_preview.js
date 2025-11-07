@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tableauxEl.appendChild(card);
   });
 
+
   // récupère le bouton (assure-toi que l'ID est correct dans le HTML)
 retourBtn.addEventListener("click", () => {
   // 1) Si la fenêtre a été ouverte par script depuis l'admin -> on peut la fermer

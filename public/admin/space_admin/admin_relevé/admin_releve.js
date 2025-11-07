@@ -44,17 +44,25 @@ async function safeJson(res) {
   }
 }
 
-async function checkAdmin() {
+// Vérification de session admin
+(async function checkAdminSession() {
   try {
-    const res = await fetch(`${API_ADMIN}/check`, { credentials: "include" });
-    if (!res.ok) return false;
+    const res = await fetch(`${API}/api/admin/check`, {
+      credentials: "include"
+    });
     const data = await res.json();
-    return !!data.connected;
+
+    if (!data.connected) {
+      // Rediriger si non connecté
+      window.location.href = "../../admin_connexion/admin_connexion.html";
+    } else {
+      console.log("✅ Admin connecté :", data.admin?.fullname || data.admin?.email);
+    }
   } catch (err) {
-    console.error("Erreur checkAdmin:", err);
-    return false;
+    console.error("Erreur vérification session :", err);
+    window.location.href = "../../admin_connexion/admin_connexion.html";
   }
-}
+})();
 
 function showEditor(show = true) {
   editeur.style.display = show ? "block" : "none";

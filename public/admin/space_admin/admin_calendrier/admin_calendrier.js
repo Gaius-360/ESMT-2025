@@ -2,6 +2,27 @@ const uploadForm = document.getElementById("uploadForm");
 const result = document.getElementById("result");
 const pdfViewer = document.getElementById("pdfViewer");
 
+
+// Vérification de session admin
+(async function checkAdminSession() {
+  try {
+    const res = await fetch(`${API}/api/admin/check`, {
+      credentials: "include"
+    });
+    const data = await res.json();
+
+    if (!data.connected) {
+      // Rediriger si non connecté
+      window.location.href = "../../admin_connexion/admin_connexion.html";
+    } else {
+      console.log("✅ Admin connecté :", data.admin?.fullname || data.admin?.email);
+    }
+  } catch (err) {
+    console.error("Erreur vérification session :", err);
+    window.location.href = "../../admin_connexion/admin_connexion.html";
+  }
+})();
+
 // Upload PDF
 uploadForm.addEventListener("submit", async e => {
   e.preventDefault();
@@ -80,7 +101,7 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 
         if (res.ok) {
           window.location.href = isAdminPage 
-            ? "/backend/public/admin/admin_connexion/admin_connexion.html" 
+            ? "../../admin_connexion/admin_connexion.html" 
             : "/login.html";
         }
       } catch (err) {

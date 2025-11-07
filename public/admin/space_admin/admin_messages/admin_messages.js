@@ -29,17 +29,27 @@ async function init() {
   initNotificationUI();
 }
 
-// --- FETCH ADMIN ---
-async function fetchAdmin() {
+
+// Vérification de session admin
+(async function checkAdminSession() {
   try {
-    const res = await fetch("https://esmt-2025.onrender.com/api/admin/me", { credentials: "include" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    admin = await res.json();
+    const res = await fetch(`${API}/api/admin/check`, {
+      credentials: "include"
+    });
+    const data = await res.json();
+
+    if (!data.connected) {
+      // Rediriger si non connecté
+      window.location.href = "../../admin_connexion/admin_connexion.html";
+    } else {
+      console.log("✅ Admin connecté :", data.admin?.fullname || data.admin?.email);
+    }
   } catch (err) {
-    console.error("Admin non connecté :", err);
-    alert("Non connecté en tant qu'admin.");
+    console.error("Erreur vérification session :", err);
+    window.location.href = "../../admin_connexion/admin_connexion.html";
   }
-}
+})();
+
 
 // --- SOCKET.IO ---
 function initSocket() {

@@ -354,7 +354,7 @@ label[for="trimestre-select"] {
 
   .footer-links {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .modal{

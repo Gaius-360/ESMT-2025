@@ -422,3 +422,47 @@ body {
   background-color: #16a085;
   color: #fff;
 }
+
+
+/* === Checkbox pour sélection des messages === */
+.msg-select {
+  margin-right: 8px;
+  align-self: flex-start;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+/* Mettre en évidence les messages sélectionnés */
+.message.selected {
+  border: 2px solid #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+  border-radius: 10px;
+}
+
+/* === Bouton supprimer les messages sélectionnés === */
+#deleteSelectedBtn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 10px 0;
+  transition: background 0.2s ease;
+}
+
+#deleteSelectedBtn:hover {
+  background-color: #c0392b;
+}
+
+/* === Ajustements pour les bulles quand checkbox présente === */
+.message .bubble {
+  display: inline-block;
+  max-width: calc(80% - 24px); /* laisser de la place pour checkbox */
+}
+
+.message.admin .bubble {
+  max-width: calc(80% - 24px);
+}

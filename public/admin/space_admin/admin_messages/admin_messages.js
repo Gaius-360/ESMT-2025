@@ -201,32 +201,62 @@ async function fetchMessages(studentId) {
 }
 
 function addMessageToChat(msg) {
-  const sender = msg.sender||{};
+  const sender = msg.sender || {};
   const fromSelf = admin && (sender._id === admin._id || sender._id === admin?._id);
+
   const div = document.createElement("div");
-  div.className = fromSelf?"message admin":"message student";
+  div.className = fromSelf ? "message admin" : "message student";
   div.dataset.messageId = msg._id;
-  const content = escapeHtml(msg.content||"");
-  const fileLink = msg.file?`<div><a href="${API}${msg.file}" target="_blank">[Fichier]</a></div>`:"";
-  const author = escapeHtml(sender.fullname||"");
-  const time = msg.createdAt?new Date(msg.createdAt).toLocaleString():"";
-  const deleteBtn = fromSelf?`<button class="delete-msg" data-id="${msg._id}" style="margin-left:5px;color:red;border:none;background:none;cursor:pointer;">❌</button>`:"";
-  div.innerHTML = `<div class="bubble"><div class="author">${author} ${deleteBtn}</div><div class="content">${content}</div>${fileLink}<div class="time">${time}</div></div>`;
+
+  const content = escapeHtml(msg.content || "");
+  const fileLink = msg.file ? `<div><a href="${API}${msg.file}" target="_blank">[Fichier]</a></div>` : "";
+  const author = escapeHtml(sender.fullname || "");
+  const time = msg.createdAt ? new Date(msg.createdAt).toLocaleString() : "";
+
+  // Checkbox pour sélection
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "msg-select";
+  div.appendChild(checkbox);
+
+  div.innerHTML += `
+    <div class="bubble">
+      <div class="author">${author}</div>
+      <div class="content">${content}</div>
+      ${fileLink}
+      <div class="time">${time}</div>
+    </div>
+  `;
+
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  if(fromSelf){
-    const btn = div.querySelector(".delete-msg");
-    btn.addEventListener("click", async ()=>{
-      if(!confirm("Voulez-vous supprimer ce message définitivement ?")) return;
-      try{
-        const res = await fetch(`${API}/api/messages/admin/message/${msg._id}`, { method:"DELETE", credentials:"include" });
-        const data = await res.json();
-        if(!res.ok) return alert(data.error||"Erreur suppression");
-        div.remove();
-      }catch(err){ console.error(err); alert("Erreur lors de la suppression du message."); }
-    });
-  }
 }
+
+document.getElementById("deleteSelectedBtn").addEventListener("click", async () => {
+  const selected = [...document.querySelectorAll(".msg-select:checked")].map(cb => cb.closest(".message").dataset.messageId);
+  if (!selected.length) return alert("Sélectionnez au moins un message.");
+
+  if (!confirm(`Voulez-vous supprimer ${selected.length} message(s) définitivement ?`)) return;
+
+  for (const messageId of selected) {
+    try {
+      const res = await fetch(`${API}/api/messages/admin/message/${messageId}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+      const data = await res.json();
+      if (!res.ok) alert(data.error || "Erreur suppression message");
+      else {
+        // supprimer du DOM
+        const div = chatMessages.querySelector(`[data-message-id="${messageId}"]`);
+        if (div) div.remove();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la suppression d'un message");
+    }
+  }
+});
 
 // --- ENVOI MESSAGE ---
 sendButton.addEventListener("click", sendMessage);

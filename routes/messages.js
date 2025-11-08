@@ -305,4 +305,36 @@ router.get("/student/thread/:adminId", requireEtudiant, async (req, res) => {
   }
 });
 
+// ------------------------
+// SUPPRESSION MESSAGE DEFINITIVE
+// ------------------------
+router.delete("/admin/message/:messageId", requireAdmin, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(messageId))
+      return res.status(400).json({ error: "ID message invalide" });
+
+    const message = await Message.findById(messageId);
+    if (!message) return res.status(404).json({ error: "Message non trouvé" });
+
+    // Supprimer le fichier associé si existant
+    if (message.file) {
+      const filePath = path.join(__dirname, "../", message.file);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    }
+
+    await Message.deleteOne({ _id: messageId });
+
+    const io = req.app.get("io");
+    if (io && message.receiver) {
+      io.to(message.receiver.toString()).emit("deleteMessage", { messageId });
+    }
+
+    res.json({ success: true, message: "Message supprimé définitivement" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur suppression message" });
+  }
+});
+
 module.exports = router;

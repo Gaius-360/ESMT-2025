@@ -38,9 +38,9 @@ body { display:flex; height:100vh; overflow:hidden; }
 
 /* === MESSAGES === */
 #chatMessages { flex:1; overflow-y:auto; padding:15px; background:#e5ddd5; }
-.message { margin-bottom:10px; display:flex; flex-direction:column; animation:fadeIn 0.2s ease-in; transition:opacity 0.3s ease, transform 0.3s ease; position:relative; }
-.message.admin { align-items:flex-end; }
-.message.student { align-items:flex-start; }
+.message { margin-bottom:10px; display:flex; flex-direction:row; animation:fadeIn 0.2s ease-in; transition:opacity 0.3s ease, transform 0.3s ease; position:relative; }
+.message.admin { justify-content:flex-end; }
+.message.student { justify-content:flex-start; }
 .message .bubble { padding:8px 12px; border-radius:10px; max-width:calc(80% - 24px); word-wrap:break-word; position:relative; box-shadow:0 1px 2px rgba(0,0,0,0.1); display:inline-block; }
 .message.admin .bubble { background-color:#32c1a4; color:#fff; }
 .message.student .bubble { background-color:#fff; color:#2c3e50; }
@@ -49,8 +49,13 @@ body { display:flex; height:100vh; overflow:hidden; }
 .message .time { font-size:0.7em; color:gray; margin-top:3px; text-align:right; }
 .message.selected { border:2px solid #e74c3c; background-color:rgba(231,76,60,0.1); border-radius:10px; }
 
-/* Checkbox pour sélection */
-.msg-select { margin-right:8px; cursor:pointer; width:16px; height:16px; align-self:flex-start; }
+/* === CHECKBOX MESSAGES === */
+.msg-select { display:none; cursor:pointer; width:16px; height:16px; position:relative; }
+.message.select-mode .msg-select { display:inline-block; }
+
+/* Alignement selon type */
+.message.student .msg-select { order:-1; margin-right:8px; }
+.message.admin .msg-select { order:1; margin-left:8px; margin-right:0; align-self:flex-end; }
 
 /* === INPUT ZONE === */
 .chat-input { display:flex; padding:12px; border-top:1px solid #ddd; background:#fafafa; gap:10px; align-items:center; }

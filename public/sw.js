@@ -93,8 +93,8 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: data.message,
-    icon: "/public_favicon/icons/icon-192.png",
-    badge: "/public_favicon/icons/icon-32.png",
+    icon: "/public/public_favicon/icons/icon-192.png",
+    badge: "/public/public_favicon/icons/icon-32.png",
     data: { url: data.url }
   };
 

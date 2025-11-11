@@ -6,8 +6,8 @@ const urlsToCache = [
   '/Student_Space/connexion/etudiant_connexion.html', // page de connexion
   '/Student_Space/connexion/etudiant_connexion.css',  // CSS page connexion
   '/Student_Space/connexion/etudiant_connexion.js',   // JS page connexion
-  '/public/public_favicon/icons/icon-192.png',               // icônes PWA
-  '/public/public_favicon/icons/icon-512.png'
+  '/public_favicons/icons/icon-192.png',               // icônes PWA
+  '/public_favicons/icons/icon-512.png'
 ];
 
 // =====================
@@ -93,8 +93,8 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: data.message,
-    icon: "/public_favicon/icons/icon-192.png",
-    badge: "/public_favicon/icons/icon-32.png",
+    icon: "/public_favicons/icons/icon-192.png",
+    badge: "/public_favicons/icons/icon-32.png",
     data: { url: data.url }
   };
 

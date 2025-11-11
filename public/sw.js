@@ -1,11 +1,11 @@
 // ===== VERSION DU CACHE =====
 const CACHE_NAME = 'app-v3'; // changez à chaque déploiement
 const urlsToCache = [
-  '/Student_Space/connexion/etudiant_connexion.html', // page de connexion
-  '/Student_Space/connexion/etudiant_connexion.css',  // CSS page connexion
-  '/Student_Space/connexion/etudiant_connexion.js',    // JS page connexion
-  '/public_favicon/icons/icon-192.png', // icônes PWA
-  '/public_favicon/icons/icon-512.png'
+  '/public/Student_Space/connexion/etudiant_connexion.html',
+  '/public/Student_Space/connexion/etudiant_connexion.css',
+  '/public/Student_Space/connexion/etudiant_connexion.js',
+  '/public/public_favicon/icons/icon-192.png',
+  '/public/public_favicon/icons/icon-512.png'
 ];
 
 // =====================
@@ -42,7 +42,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
-      .catch(() => caches.match('/Student_Space/connexion/index.html')) // fallback vers connexion si offline
+      .catch(() => caches.match('/public/Student_Space/connexion/etudiant_connexion.html'))
   );
 });
 
@@ -50,13 +50,13 @@ self.addEventListener('fetch', (event) => {
 // PUSH NOTIFICATIONS
 // =====================
 self.addEventListener("push", (event) => {
-  let data = { title: "Notification", message: "Vous avez une notification", url: "/Student_Space/connexion/index.html" };
+  let data = { title: "Notification", message: "Vous avez une notification", url: "/public/Student_Space/connexion/etudiant_connexion.html" };
   try { data = event.data.json(); } catch(e){}
 
   const options = {
     body: data.message,
-    icon: "/public_favicon/icons/icon-192.png",
-    badge: "/public_favicon/icons/icon-32.png",
+    icon: "/public/public_favicon/icons/icon-192.png",
+    badge: "/public/public_favicon/icons/icon-32.png",
     data: { url: data.url }
   };
 
@@ -68,7 +68,8 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url === event.notification.data.url && 'focus' in client) return client.focus();
+        if (client.url.includes(event.notification.data.url) && 'focus' in client) 
+        return client.focus();
       }
       if (clients.openWindow) return clients.openWindow(event.notification.data.url);
     })

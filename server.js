@@ -94,8 +94,8 @@ const PushSubscription = require('./models/PushSubscription');
 
 webpush.setVapidDetails(
 `mailto:${process.env.MAIL_FROM || 'admin@esmt-2025.com'}`,
-process.env.VAPID_PUBLIC_KEY,
-process.env.VAPID_PRIVATE_KEY
+process.env.PUBLIC_KEY,
+process.env.PRIVATE_KEY
 );
 
 
